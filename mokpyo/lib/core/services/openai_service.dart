@@ -30,7 +30,7 @@ class OpenAIService {
           },
           {
             "role": "user",
-            "content": "사용자 정보: 직업: $job, 숙련도: $level, 목표 기한: $duration, 가용 시간: ${weeklyHours}시간/주. 목표: $goal. 위 정보를 기준으로 목표를 대목표 1개, 중목표 2개, 소목표 각 2개, 그리고 당장 오늘 실천할 퀘스트 총 3개(난이도 포함)로 상세 분해하고, 완료 시 올라갈 능력치(career, health, knowledge, money, communication 중 1~2개 선택)를 지정하라."
+            "content": "사용자 정보: 직업: $job, 숙련도: $level, 목표 기한: $duration, 가용 시간: ${weeklyHours}시간/주. 목표: $goal. 위 정보를 기준으로 목표를 대목표 1개, 중목표 2개, 소목표 각 2개로 분해하고, 그리고 당장 오늘부터 실천할 아주 작고 구체적인 습관 단위의 일일 퀘스트를 최소 10개(최대 15개, 난이도 포함)로 상세 분해하며, 완료 시 올라갈 능력치(career, health, knowledge, money, communication 중 1~2개 선택)를 지정하라."
           }
         ]
       }),

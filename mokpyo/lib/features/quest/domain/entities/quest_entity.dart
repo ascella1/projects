@@ -11,7 +11,7 @@ class Quest extends Equatable {
   final QuestStatus status;
   final QuestDifficulty difficulty;
   final int rewardExp;
-  final List<String> rewardStats; // ['money', 'knowledge', 'health' 등]
+  final List<String> rewardStats;
   final DateTime dueDate;
   final DateTime? completedAt;
 
@@ -54,17 +54,37 @@ class Quest extends Equatable {
     );
   }
 
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'goalId': goalId,
+        'title': title,
+        'depth': depth,
+        'status': status.index,
+        'difficulty': difficulty.index,
+        'rewardExp': rewardExp,
+        'rewardStats': rewardStats,
+        'dueDate': dueDate.toIso8601String(),
+        'completedAt': completedAt?.toIso8601String(),
+      };
+
+  factory Quest.fromJson(Map<String, dynamic> map) => Quest(
+        id: map['id'] as String,
+        goalId: map['goalId'] as String,
+        title: map['title'] as String,
+        depth: map['depth'] as int,
+        status: QuestStatus.values[map['status'] as int],
+        difficulty: QuestDifficulty.values[map['difficulty'] as int],
+        rewardExp: map['rewardExp'] as int,
+        rewardStats: List<String>.from(map['rewardStats'] as List),
+        dueDate: DateTime.parse(map['dueDate'] as String),
+        completedAt: map['completedAt'] != null
+            ? DateTime.parse(map['completedAt'] as String)
+            : null,
+      );
+
   @override
   List<Object?> get props => [
-        id,
-        goalId,
-        title,
-        depth,
-        status,
-        difficulty,
-        rewardExp,
-        rewardStats,
-        dueDate,
-        completedAt,
+        id, goalId, title, depth, status, difficulty,
+        rewardExp, rewardStats, dueDate, completedAt,
       ];
 }

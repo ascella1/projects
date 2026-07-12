@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../data/repositories/quest_repository_impl.dart';
 
 class UserState {
   final bool hasCompletedOnboarding;
-  final String characterType; // 'cat', 'dog', 'fox'
+  final String characterType;
   final String goal;
   final List<String> recommendedStats;
   final int level;
@@ -12,8 +13,12 @@ class UserState {
   final int boxesCount;
   final List<String> inventory;
   final String? equippedAccessory;
+  final Map<String, int> statLevels;
+  final String lastLoginDate;
+  final int currentStreak;
+  final bool pendingStreakReward;
 
-  UserState({
+  const UserState({
     this.hasCompletedOnboarding = false,
     this.characterType = 'fox',
     this.goal = '',
@@ -23,6 +28,16 @@ class UserState {
     this.boxesCount = 0,
     this.inventory = const [],
     this.equippedAccessory,
+    this.statLevels = const {
+      'knowledge': 0,
+      'career': 0,
+      'health': 0,
+      'money': 0,
+      'communication': 0,
+    },
+    this.lastLoginDate = '',
+    this.currentStreak = 0,
+    this.pendingStreakReward = false,
   });
 
   UserState copyWith({
@@ -36,9 +51,14 @@ class UserState {
     List<String>? inventory,
     String? equippedAccessory,
     bool clearEquipped = false,
+    Map<String, int>? statLevels,
+    String? lastLoginDate,
+    int? currentStreak,
+    bool? pendingStreakReward,
   }) {
     return UserState(
-      hasCompletedOnboarding: hasCompletedOnboarding ?? this.hasCompletedOnboarding,
+      hasCompletedOnboarding:
+          hasCompletedOnboarding ?? this.hasCompletedOnboarding,
       characterType: characterType ?? this.characterType,
       goal: goal ?? this.goal,
       recommendedStats: recommendedStats ?? this.recommendedStats,
@@ -46,45 +66,62 @@ class UserState {
       exp: exp ?? this.exp,
       boxesCount: boxesCount ?? this.boxesCount,
       inventory: inventory ?? this.inventory,
-      equippedAccessory: clearEquipped ? null : (equippedAccessory ?? this.equippedAccessory),
+      equippedAccessory:
+          clearEquipped ? null : (equippedAccessory ?? this.equippedAccessory),
+      statLevels: statLevels ?? this.statLevels,
+      lastLoginDate: lastLoginDate ?? this.lastLoginDate,
+      currentStreak: currentStreak ?? this.currentStreak,
+      pendingStreakReward: pendingStreakReward ?? this.pendingStreakReward,
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'hasCompletedOnboarding': hasCompletedOnboarding,
-      'characterType': characterType,
-      'goal': goal,
-      'recommendedStats': recommendedStats,
-      'level': level,
-      'exp': exp,
-      'boxesCount': boxesCount,
-      'inventory': inventory,
-      'equippedAccessory': equippedAccessory,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        'hasCompletedOnboarding': hasCompletedOnboarding,
+        'characterType': characterType,
+        'goal': goal,
+        'recommendedStats': recommendedStats,
+        'level': level,
+        'exp': exp,
+        'boxesCount': boxesCount,
+        'inventory': inventory,
+        'equippedAccessory': equippedAccessory,
+        'statLevels': statLevels,
+        'lastLoginDate': lastLoginDate,
+        'currentStreak': currentStreak,
+        // pendingStreakReward는 앱 시작 시 재계산하므로 저장하지 않음
+      };
 
-  factory UserState.fromJson(Map<String, dynamic> map) {
-    return UserState(
-      hasCompletedOnboarding: map['hasCompletedOnboarding'] ?? false,
-      characterType: map['characterType'] ?? 'fox',
-      goal: map['goal'] ?? '',
-      recommendedStats: List<String>.from(map['recommendedStats'] ?? []),
-      level: map['level'] ?? 1,
-      exp: map['exp'] ?? 0,
-      boxesCount: map['boxesCount'] ?? 0,
-      inventory: List<String>.from(map['inventory'] ?? []),
-      equippedAccessory: map['equippedAccessory'],
-    );
-  }
+  factory UserState.fromJson(Map<String, dynamic> map) => UserState(
+        hasCompletedOnboarding: map['hasCompletedOnboarding'] ?? false,
+        characterType: map['characterType'] ?? 'fox',
+        goal: map['goal'] ?? '',
+        recommendedStats: List<String>.from(map['recommendedStats'] ?? []),
+        level: map['level'] ?? 1,
+        exp: map['exp'] ?? 0,
+        boxesCount: map['boxesCount'] ?? 0,
+        inventory: List<String>.from(map['inventory'] ?? []),
+        equippedAccessory: map['equippedAccessory'],
+        statLevels: map['statLevels'] != null
+            ? Map<String, int>.from(map['statLevels'] as Map)
+            : const {
+                'knowledge': 0,
+                'career': 0,
+                'health': 0,
+                'money': 0,
+                'communication': 0,
+              },
+        lastLoginDate: map['lastLoginDate'] ?? '',
+        currentStreak: map['currentStreak'] ?? 0,
+        pendingStreakReward: false,
+      );
 }
 
 class UserNotifier extends StateNotifier<UserState> {
-  UserNotifier() : super(UserState()) {
+  UserNotifier() : super(const UserState()) {
     _loadState();
   }
 
-  static const _prefKey = 'rpg_user_state';
+  static const _prefKey = 'rpg_user_state_v2';
 
   Future<void> _loadState() async {
     try {
@@ -93,16 +130,56 @@ class UserNotifier extends StateNotifier<UserState> {
       if (jsonStr != null) {
         state = UserState.fromJson(jsonDecode(jsonStr));
       }
-    } catch (_) {
-      // 캐시 로드 에러 시 디폴트 상태 유지
-    }
+    } catch (_) {}
+    _checkDailyLogin();
   }
 
-  Future<void> _saveState(UserState newState) async {
-    state = newState;
+  void _checkDailyLogin() {
+    if (!state.hasCompletedOnboarding) return;
+
+    final now = DateTime.now();
+    final todayStr =
+        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+
+    if (state.lastLoginDate == todayStr) return;
+
+    int newStreak = 1;
+    bool rewardPending = false;
+    int bonusBoxes = 0;
+
+    if (state.lastLoginDate.isNotEmpty) {
+      final lastDate = DateTime.tryParse(state.lastLoginDate);
+      if (lastDate != null) {
+        final lastDay =
+            DateTime(lastDate.year, lastDate.month, lastDate.day);
+        final today = DateTime(now.year, now.month, now.day);
+        final diff = today.difference(lastDay).inDays;
+        if (diff == 1) {
+          newStreak = state.currentStreak + 1;
+        }
+        // diff > 1: 연속 끊김, newStreak = 1로 유지
+      }
+    }
+
+    if (newStreak >= 7) {
+      rewardPending = true;
+      bonusBoxes = 3;
+      newStreak = 0; // 7일 달성 후 리셋
+    }
+
+    state = state.copyWith(
+      lastLoginDate: todayStr,
+      currentStreak: newStreak,
+      boxesCount: state.boxesCount + bonusBoxes,
+      pendingStreakReward: rewardPending,
+    );
+    _persistState(state);
+  }
+
+  Future<void> _persistState(UserState s) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_prefKey, jsonEncode(newState.toJson()));
+      await prefs.setString(_prefKey, jsonEncode(s.toJson()));
     } catch (_) {}
   }
 
@@ -111,6 +188,10 @@ class UserNotifier extends StateNotifier<UserState> {
     required String goal,
     required List<String> recommendedStats,
   }) async {
+    final now = DateTime.now();
+    final todayStr =
+        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+
     final newState = state.copyWith(
       hasCompletedOnboarding: true,
       characterType: characterType,
@@ -121,62 +202,89 @@ class UserNotifier extends StateNotifier<UserState> {
       boxesCount: 0,
       inventory: [],
       clearEquipped: true,
+      statLevels: const {
+        'knowledge': 0,
+        'career': 0,
+        'health': 0,
+        'money': 0,
+        'communication': 0,
+      },
+      lastLoginDate: todayStr,
+      currentStreak: 1,
+      pendingStreakReward: false,
     );
-    await _saveState(newState);
+    state = newState;
+    await _persistState(newState);
   }
 
-  Future<void> addExp(int amount) async {
+  // EXP 추가 후 레벨업 여부를 반환합니다.
+  Future<int> addExp(int amount) async {
     int tempExp = state.exp + amount;
     int tempLevel = state.level;
+    int levelsGained = 0;
     while (tempExp >= 100) {
       tempExp -= 100;
-      tempLevel += 1;
+      tempLevel++;
+      levelsGained++;
     }
-    
-    final newState = state.copyWith(
-      level: tempLevel,
-      exp: tempExp,
-    );
-    await _saveState(newState);
+    final newState = state.copyWith(level: tempLevel, exp: tempExp);
+    state = newState;
+    await _persistState(newState);
+    return levelsGained;
+  }
+
+  Future<void> addStatLevels(List<String> stats) async {
+    final newStatLevels = Map<String, int>.from(state.statLevels);
+    for (final stat in stats) {
+      newStatLevels[stat] = (newStatLevels[stat] ?? 0) + 1;
+    }
+    final newState = state.copyWith(statLevels: newStatLevels);
+    state = newState;
+    await _persistState(newState);
+  }
+
+  void clearPendingStreakReward() {
+    state = state.copyWith(pendingStreakReward: false);
   }
 
   Future<void> gainBox(int count) async {
-    final newState = state.copyWith(
-      boxesCount: state.boxesCount + count,
-    );
-    await _saveState(newState);
+    final newState = state.copyWith(boxesCount: state.boxesCount + count);
+    state = newState;
+    await _persistState(newState);
   }
 
   Future<bool> openBox(String item) async {
     if (state.boxesCount <= 0) return false;
-    
     final newInventory = List<String>.from(state.inventory);
-    if (!newInventory.contains(item)) {
-      newInventory.add(item);
-    }
-    
+    if (!newInventory.contains(item)) newInventory.add(item);
     final newState = state.copyWith(
       boxesCount: state.boxesCount - 1,
       inventory: newInventory,
     );
-    await _saveState(newState);
+    state = newState;
+    await _persistState(newState);
     return true;
   }
 
   Future<void> equipAccessory(String? item) async {
+    final UserState newState;
     if (item == null) {
-      final newState = state.copyWith(clearEquipped: true);
-      await _saveState(newState);
+      newState = state.copyWith(clearEquipped: true);
     } else {
-      if (state.inventory.contains(item)) {
-        final newState = state.copyWith(equippedAccessory: item);
-        await _saveState(newState);
-      }
+      if (!state.inventory.contains(item)) return;
+      newState = state.copyWith(equippedAccessory: item);
     }
+    state = newState;
+    await _persistState(newState);
   }
 
   Future<void> resetAll() async {
-    await _saveState(UserState());
+    state = const UserState();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_prefKey);
+      await prefs.remove(QuestRepositoryImpl.sharedPrefKey);
+    } catch (_) {}
   }
 }
 
