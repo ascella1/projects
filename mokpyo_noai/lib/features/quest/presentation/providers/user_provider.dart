@@ -18,6 +18,8 @@ class UserState {
   final String lastLoginDate;
   final int currentStreak;
   final bool pendingStreakReward;
+  final String lastRoutineDate; // 마지막으로 일일 퀘스트(depth 4)를 완료한 날짜
+  final String lastGreetedDate; // 캐릭터에게 마지막으로 "인사"(체크인)한 날짜
 
   const UserState({
     this.hasCompletedOnboarding = false,
@@ -39,6 +41,8 @@ class UserState {
     this.lastLoginDate = '',
     this.currentStreak = 0,
     this.pendingStreakReward = false,
+    this.lastRoutineDate = '',
+    this.lastGreetedDate = '',
   });
 
   UserState copyWith({
@@ -56,6 +60,8 @@ class UserState {
     String? lastLoginDate,
     int? currentStreak,
     bool? pendingStreakReward,
+    String? lastRoutineDate,
+    String? lastGreetedDate,
   }) {
     return UserState(
       hasCompletedOnboarding:
@@ -73,6 +79,8 @@ class UserState {
       lastLoginDate: lastLoginDate ?? this.lastLoginDate,
       currentStreak: currentStreak ?? this.currentStreak,
       pendingStreakReward: pendingStreakReward ?? this.pendingStreakReward,
+      lastRoutineDate: lastRoutineDate ?? this.lastRoutineDate,
+      lastGreetedDate: lastGreetedDate ?? this.lastGreetedDate,
     );
   }
 
@@ -89,6 +97,8 @@ class UserState {
         'statLevels': statLevels,
         'lastLoginDate': lastLoginDate,
         'currentStreak': currentStreak,
+        'lastRoutineDate': lastRoutineDate,
+        'lastGreetedDate': lastGreetedDate,
         // pendingStreakReward는 앱 시작 시 재계산하므로 저장하지 않음
       };
 
@@ -114,6 +124,8 @@ class UserState {
         lastLoginDate: map['lastLoginDate'] ?? '',
         currentStreak: map['currentStreak'] ?? 0,
         pendingStreakReward: false,
+        lastRoutineDate: map['lastRoutineDate'] ?? '',
+        lastGreetedDate: map['lastGreetedDate'] ?? '',
       );
 }
 
@@ -248,6 +260,30 @@ class UserNotifier extends StateNotifier<UserState> {
 
   void clearPendingStreakReward() {
     state = state.copyWith(pendingStreakReward: false);
+  }
+
+  static String _todayStr() {
+    final now = DateTime.now();
+    return '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+  }
+
+  // 일일 퀘스트(depth 4)를 완료할 때마다 호출한다. 캐릭터의 기분(mood)을
+  // 판단하는 기준이 되는 "오늘 루틴을 했는가"를 기록한다.
+  Future<void> recordRoutineCompletion() async {
+    final today = _todayStr();
+    if (state.lastRoutineDate == today) return;
+    final newState = state.copyWith(lastRoutineDate: today);
+    state = newState;
+    await _persistState(newState);
+  }
+
+  // 캐릭터를 탭해 오늘의 인사(체크인)를 했는지 기록한다.
+  Future<void> markGreetedToday() async {
+    final today = _todayStr();
+    if (state.lastGreetedDate == today) return;
+    final newState = state.copyWith(lastGreetedDate: today);
+    state = newState;
+    await _persistState(newState);
   }
 
   Future<void> gainBox(int count) async {

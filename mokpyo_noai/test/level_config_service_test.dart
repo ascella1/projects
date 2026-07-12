@@ -13,6 +13,8 @@ void main() {
     expect(cfg.tierUnlockLevelByDepth, {3: 5, 2: 10, 1: 20});
     expect(cfg.streakDaysRequired, 7);
     expect(cfg.streakBonusBoxes, 3);
+    expect(cfg.moodNeutralAfterDays, 1);
+    expect(cfg.moodHungryAfterDays, 2);
   });
 
   test('load() 이후 current는 같은 캐시 인스턴스를 즉시 반환한다', () async {
@@ -25,5 +27,7 @@ void main() {
     expect(fallback.expPerLevel, 100);
     expect(fallback.rewardExpByDepth[4], 10);
     expect(fallback.tierUnlockLevelByDepth[1], 20);
+    expect(fallback.moodNeutralAfterDays, 1);
+    expect(fallback.moodHungryAfterDays, 2);
   });
 }

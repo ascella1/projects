@@ -5,6 +5,7 @@ import '../../domain/repositories/quest_repository.dart';
 import '../../data/repositories/quest_repository_impl.dart';
 import 'user_provider.dart';
 import '../../../../core/services/notification_service.dart';
+import '../../../../core/services/level_config_service.dart';
 
 class QuestListNotifier extends StateNotifier<AsyncValue<List<Quest>>> {
   final QuestRepository _repository;
@@ -47,6 +48,9 @@ class QuestListNotifier extends StateNotifier<AsyncValue<List<Quest>>> {
       await _ref
           .read(userProvider.notifier)
           .addStatLevels(quest.rewardStats);
+      if (quest.depth == 4) {
+        await _ref.read(userProvider.notifier).recordRoutineCompletion();
+      }
 
       _syncDailyReminder();
       return levelsGained;
@@ -77,6 +81,32 @@ class QuestListNotifier extends StateNotifier<AsyncValue<List<Quest>>> {
   Future<void> replaceQuests(List<Quest> quests) async {
     await _repository.createQuests(quests);
     state = AsyncValue.data(quests);
+    _syncDailyReminder();
+  }
+
+  // "나의 정원"의 오늘의 실천 목표에서 사용자가 즉석으로 추가하는 일회성
+  // 일일 퀘스트(depth 4). 위저드를 다시 거치지 않고 바로 추가할 수 있다.
+  Future<void> addAdHocQuest({
+    required String goalId,
+    required String title,
+    required List<String> rewardStats,
+  }) async {
+    final currentQuests = state.value ?? [];
+    final cfg = LevelConfigService.current;
+    final newQuest = Quest(
+      id: 'q_adhoc_${DateTime.now().microsecondsSinceEpoch}',
+      goalId: goalId,
+      title: title,
+      depth: 4,
+      status: QuestStatus.todo,
+      difficulty: QuestDifficulty.easy,
+      rewardExp: cfg.rewardExpByDepth[4] ?? 10,
+      rewardStats: rewardStats,
+      dueDate: DateTime.now().add(const Duration(days: 1)),
+    );
+    final updated = [...currentQuests, newQuest];
+    await _repository.createQuests(updated);
+    state = AsyncValue.data(updated);
     _syncDailyReminder();
   }
 

@@ -4,6 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/character_util.dart';
 import '../../../../core/utils/stat_util.dart';
 import '../providers/goal_wizard_provider.dart';
+import '../utils/wizard_reactions.dart';
 
 // AI 없이 사용자가 직접 목표를 입력하는 7단계 위저드.
 // 0:캐릭터선택 1:대목표 2:스탯선택 3:중목표 4:소목표 5:일일퀘스트 6:최종확인
@@ -70,13 +71,14 @@ class _GoalWizardScreenState extends ConsumerState<GoalWizardScreen> {
   // 없이 현재 단계 하나만 빌드해도 입력값이 보존된다 (탭 전환으로 재빌드돼도
   // 컨트롤러 인스턴스 자체는 그대로).
   Widget _buildStep(GoalWizardState wizardState, GoalWizardNotifier notifier) {
+    final reaction = reactionForStep(wizardState.step, wizardState);
     switch (wizardState.step) {
       case 0:
         return _buildCharacterStep(wizardState, notifier);
       case 1:
-        return _buildMainGoalStep(notifier);
+        return _buildMainGoalStep(notifier, wizardState, reaction);
       case 2:
-        return _buildStatSelectStep(wizardState, notifier);
+        return _buildStatSelectStep(wizardState, notifier, reaction);
       case 3:
         return _buildDynamicListStep(
           title: '그 목표를 이루기 위해서\n해야하는게 뭔가요?',
@@ -88,6 +90,8 @@ class _GoalWizardScreenState extends ConsumerState<GoalWizardScreen> {
             notifier.setMidGoals(_nonEmptyTexts(_midControllers));
             notifier.nextStep();
           },
+          reaction: reaction,
+          characterType: wizardState.characterType,
         );
       case 4:
         return _buildDynamicListStep(
@@ -100,6 +104,8 @@ class _GoalWizardScreenState extends ConsumerState<GoalWizardScreen> {
             notifier.setSubGoals(_nonEmptyTexts(_subControllers));
             notifier.nextStep();
           },
+          reaction: reaction,
+          characterType: wizardState.characterType,
         );
       case 5:
         return _buildDynamicListStep(
@@ -119,10 +125,52 @@ class _GoalWizardScreenState extends ConsumerState<GoalWizardScreen> {
             notifier.setDailyQuests(quests);
             notifier.nextStep();
           },
+          reaction: reaction,
+          characterType: wizardState.characterType,
         );
       default:
-        return _buildReviewStep(wizardState, notifier);
+        return _buildReviewStep(wizardState, notifier, reaction);
     }
+  }
+
+  // 캐릭터가 바로 이전 단계의 답변에 대해 보내는 한마디. 코칭을 받는 느낌을
+  // 주기 위한 장치로, 각 단계 상단에 배치한다.
+  Widget _coachReactionBubble(String characterType, String reaction) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(characterEmoji(characterType),
+              style: const TextStyle(fontSize: 28)),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.85),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 6)
+                ],
+              ),
+              child: Text(
+                reaction,
+                style: const TextStyle(
+                    fontSize: 12,
+                    fontStyle: FontStyle.italic,
+                    color: Color(0xFF5D4037),
+                    height: 1.4),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   // -------------------- Step 0: 캐릭터 선택 --------------------
@@ -148,19 +196,24 @@ class _GoalWizardScreenState extends ConsumerState<GoalWizardScreen> {
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary),
           ),
-          const SizedBox(height: 36),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisSpacing: 14,
-            mainAxisSpacing: 14,
-            childAspectRatio: 1.1,
-            children: ['cat', 'dog', 'rabbit', 'fox']
-                .map((type) => _characterCard(type, state, notifier))
-                .toList(),
+          const SizedBox(height: 28),
+          Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 300),
+              child: GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 1.25,
+                children: ['cat', 'dog', 'rabbit', 'fox']
+                    .map((type) => _characterCard(type, state, notifier))
+                    .toList(),
+              ),
+            ),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 32),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -183,35 +236,35 @@ class _GoalWizardScreenState extends ConsumerState<GoalWizardScreen> {
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
           color: isSelected ? Colors.white : Colors.white.withValues(alpha: 0.45),
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(18),
           border: Border.all(
             color: isSelected ? AppColors.primary : Colors.transparent,
-            width: 3,
+            width: 2.5,
           ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
                       color: Colors.green.withValues(alpha: 0.25),
-                      blurRadius: 12,
-                      spreadRadius: 2)
+                      blurRadius: 10,
+                      spreadRadius: 1)
                 ]
               : [],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(characterEmoji(type), style: const TextStyle(fontSize: 52)),
-            const SizedBox(height: 8),
+            Text(characterEmoji(type), style: const TextStyle(fontSize: 38)),
+            const SizedBox(height: 6),
             Text(characterLabel(type),
                 style: const TextStyle(
-                    fontSize: 13,
+                    fontSize: 12,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary)),
             if (isSelected) ...[
-              const SizedBox(height: 4),
+              const SizedBox(height: 3),
               Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    const EdgeInsets.symmetric(horizontal: 7, vertical: 1),
                 decoration: BoxDecoration(
                   color: AppColors.primary,
                   borderRadius: BorderRadius.circular(10),
@@ -231,12 +284,15 @@ class _GoalWizardScreenState extends ConsumerState<GoalWizardScreen> {
 
   // -------------------- Step 1: 대목표 --------------------
 
-  Widget _buildMainGoalStep(GoalWizardNotifier notifier) {
+  Widget _buildMainGoalStep(
+      GoalWizardNotifier notifier, GoalWizardState state, String? reaction) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(28.0),
       child: Column(
         children: [
           const SizedBox(height: 20),
+          if (reaction != null)
+            _coachReactionBubble(state.characterType, reaction),
           const Text('🎯', style: TextStyle(fontSize: 40)),
           const SizedBox(height: 16),
           const Text(
@@ -299,12 +355,14 @@ class _GoalWizardScreenState extends ConsumerState<GoalWizardScreen> {
   // -------------------- Step 2: 스탯 선택 --------------------
 
   Widget _buildStatSelectStep(
-      GoalWizardState state, GoalWizardNotifier notifier) {
+      GoalWizardState state, GoalWizardNotifier notifier, String? reaction) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(28.0),
       child: Column(
         children: [
           const SizedBox(height: 20),
+          if (reaction != null)
+            _coachReactionBubble(state.characterType, reaction),
           const Text('📊', style: TextStyle(fontSize: 40)),
           const SizedBox(height: 16),
           const Text(
@@ -391,6 +449,8 @@ class _GoalWizardScreenState extends ConsumerState<GoalWizardScreen> {
     required List<TextEditingController> controllers,
     required VoidCallback onBack,
     required VoidCallback onNext,
+    String? reaction,
+    required String characterType,
   }) {
     return StatefulBuilder(
       builder: (context, setLocalState) {
@@ -399,6 +459,8 @@ class _GoalWizardScreenState extends ConsumerState<GoalWizardScreen> {
           child: Column(
             children: [
               const SizedBox(height: 20),
+              if (reaction != null)
+                _coachReactionBubble(characterType, reaction),
               Text(
                 title,
                 textAlign: TextAlign.center,
@@ -491,12 +553,15 @@ class _GoalWizardScreenState extends ConsumerState<GoalWizardScreen> {
 
   // -------------------- Step 6: 최종 확인 --------------------
 
-  Widget _buildReviewStep(GoalWizardState state, GoalWizardNotifier notifier) {
+  Widget _buildReviewStep(
+      GoalWizardState state, GoalWizardNotifier notifier, String? reaction) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(28.0),
       child: Column(
         children: [
           const SizedBox(height: 20),
+          if (reaction != null)
+            _coachReactionBubble(state.characterType, reaction),
           const Text('✅ 입력 완료',
               style: TextStyle(fontSize: 14, color: AppColors.textSecondary)),
           const SizedBox(height: 8),

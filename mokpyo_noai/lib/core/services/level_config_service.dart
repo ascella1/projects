@@ -9,6 +9,8 @@ class LevelConfig {
   final Map<int, int> tierUnlockLevelByDepth;
   final int streakDaysRequired;
   final int streakBonusBoxes;
+  final int moodNeutralAfterDays;
+  final int moodHungryAfterDays;
 
   const LevelConfig({
     required this.expPerLevel,
@@ -16,6 +18,8 @@ class LevelConfig {
     required this.tierUnlockLevelByDepth,
     required this.streakDaysRequired,
     required this.streakBonusBoxes,
+    required this.moodNeutralAfterDays,
+    required this.moodHungryAfterDays,
   });
 
   factory LevelConfig.fallback() => const LevelConfig(
@@ -24,6 +28,8 @@ class LevelConfig {
         tierUnlockLevelByDepth: {3: 5, 2: 10, 1: 20},
         streakDaysRequired: 7,
         streakBonusBoxes: 3,
+        moodNeutralAfterDays: 1,
+        moodHungryAfterDays: 2,
       );
 
   factory LevelConfig.fromJson(Map<String, dynamic> map) {
@@ -31,6 +37,7 @@ class LevelConfig {
         m.map((key, value) => MapEntry(int.parse(key), value as int));
 
     final streak = map['streak'] as Map<String, dynamic>;
+    final mood = map['mood'] as Map<String, dynamic>;
     return LevelConfig(
       expPerLevel: map['expPerLevel'] as int,
       rewardExpByDepth:
@@ -39,6 +46,8 @@ class LevelConfig {
           parseIntMap(map['tierUnlockLevels'] as Map<String, dynamic>),
       streakDaysRequired: streak['daysRequired'] as int,
       streakBonusBoxes: streak['bonusBoxes'] as int,
+      moodNeutralAfterDays: mood['neutralAfterDays'] as int,
+      moodHungryAfterDays: mood['hungryAfterDays'] as int,
     );
   }
 }
