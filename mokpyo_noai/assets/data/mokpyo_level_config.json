@@ -1,0 +1,7 @@
+{
+  "_comment": "레벨업/보상 밸런스 설정. 코드 수정 없이 이 값만 바꾸면 됩니다. rewardExpByDepth/tierUnlockLevels의 키는 퀘스트 depth(1=대목표,2=중목표,3=소목표,4=일일퀘스트)를 의미합니다.",
+  "expPerLevel": 100,
+  "rewardExpByDepth": { "1": 100, "2": 50, "3": 30, "4": 10 },
+  "tierUnlockLevels": { "3": 5, "2": 10, "1": 20 },
+  "streak": { "daysRequired": 7, "bonusBoxes": 3 }
+}
