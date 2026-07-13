@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter/material.dart';
 
 // 캐릭터 타입(cat/dog/rabbit/fox)에 대응하는 이모지/대사/기분(mood) 헬퍼.
 //
@@ -7,6 +8,13 @@ import 'dart:math';
 // 기준으로 daysSince()를 계산해 mood를 결정한다.
 
 enum CharacterMood { happy, neutral, hungry }
+
+// 캐릭터를 화면에 그리는 단일 지점. 지금은 이모지 Text를 반환하지만,
+// 나중에 실제 이미지 에셋으로 바꾸려면 이 함수 내부만 수정하면 된다.
+// 자세한 안내는 프로젝트 루트의 CHARACTER_DESIGN.md 참고.
+Widget characterVisual(String type, {required double size}) {
+  return Text(characterEmoji(type), style: TextStyle(fontSize: size));
+}
 
 String characterEmoji(String type) {
   switch (type) {

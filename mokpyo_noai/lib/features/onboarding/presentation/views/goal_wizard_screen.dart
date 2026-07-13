@@ -142,8 +142,7 @@ class _GoalWizardScreenState extends ConsumerState<GoalWizardScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(characterEmoji(characterType),
-              style: const TextStyle(fontSize: 28)),
+          characterVisual(characterType, size: 28),
           const SizedBox(width: 8),
           Flexible(
             child: Container(
@@ -253,7 +252,7 @@ class _GoalWizardScreenState extends ConsumerState<GoalWizardScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(characterEmoji(type), style: const TextStyle(fontSize: 38)),
+            characterVisual(type, size: 38),
             const SizedBox(height: 6),
             Text(characterLabel(type),
                 style: const TextStyle(

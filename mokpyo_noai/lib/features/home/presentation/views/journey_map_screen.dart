@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -6,17 +7,81 @@ import '../../../quest/domain/entities/quest_entity.dart';
 import '../../../quest/presentation/providers/quest_provider.dart';
 import '../../../quest/presentation/providers/user_provider.dart';
 
-const Map<int, String> _tierEmoji = {1: '🏆', 2: '🥈', 3: '🥉', 4: '🌱'};
-const Map<int, String> _tierLabel = {
+// ============================================================
+// 🎨 지도 디자인 커스터마이징
+// 여정 지도의 생김새를 바꾸고 싶다면 이 블록의 상수/리스트만 고치면 된다.
+// 화면 로직(위젯 빌드, 탭 처리 등)은 건드릴 필요 없음.
+// 자세한 안내는 프로젝트 루트의 MAP_DESIGN.md 참고.
+// ============================================================
+
+// 배경 그라데이션: 하늘(대목표 근처) → 산 → 숲 → 초원(오늘의 실천 근처).
+const List<Color> mapBackgroundColors = [
+  Color(0xFFBBDEFB),
+  Color(0xFFD1C4E9),
+  Color(0xFFC8E6C9),
+  Color(0xFFE8F5E9),
+];
+const List<double> mapBackgroundStops = [0.0, 0.32, 0.62, 1.0];
+
+// 배경에 흩뿌리는 장식 이모지. top/bottom 중 하나, left/right 중 하나씩 지정.
+class MapDecoration {
+  final String emoji;
+  final double fontSize;
+  final double? top;
+  final double? bottom;
+  final double? left;
+  final double? right;
+
+  const MapDecoration({
+    required this.emoji,
+    required this.fontSize,
+    this.top,
+    this.bottom,
+    this.left,
+    this.right,
+  });
+}
+
+const List<MapDecoration> mapDecorations = [
+  MapDecoration(emoji: '☁️', fontSize: 26, top: 16, left: 28),
+  MapDecoration(emoji: '☁️', fontSize: 20, top: 46, right: 36),
+  MapDecoration(emoji: '⛰️', fontSize: 32, top: 130, left: 50),
+  MapDecoration(emoji: '⛰️', fontSize: 28, top: 138, right: 60),
+  MapDecoration(emoji: '🌲', fontSize: 24, top: 250, left: 18),
+  MapDecoration(emoji: '🌲', fontSize: 22, top: 290, right: 20),
+  MapDecoration(emoji: '🌼', fontSize: 20, bottom: 26, left: 34),
+  MapDecoration(emoji: '🌿', fontSize: 22, bottom: 46, right: 44),
+];
+
+// 오솔길(트레일) 스타일: 굵은 밑색 위에 점선을 겹쳐 흙길처럼 보이게 한다.
+const Color trailBaseColor = Color(0xFFD9C9A3);
+const Color trailDashColor = Color(0xFF8D6E4B);
+const double trailBaseWidth = 10;
+const double trailDashWidth = 3;
+const double trailDashLength = 10;
+const double trailGapLength = 8;
+
+// 핀(노드) 배치: 세로 간격, 위아래 여백, 좌우 지그재그 패턴(-1=완전 왼쪽 ~ 1=완전 오른쪽).
+const double nodeSpacing = 150;
+const double topPadding = 50;
+const double bottomPadding = 70;
+const List<double> zigzagPattern = [0.0, 0.55, 0.0, -0.55];
+
+// 목표 단계(tier)별 이모지/이름/핀 크기. depth: 1=대목표, 2=중목표, 3=소목표, 4=일일퀘스트.
+const Map<int, String> tierEmoji = {1: '🏆', 2: '🥈', 3: '🥉', 4: '🌱'};
+const Map<int, String> tierLabel = {
   1: '대목표',
   2: '중목표',
   3: '소목표',
   4: '일일 퀘스트',
 };
+const Map<int, double> tierPinSize = {1: 60, 2: 52, 3: 46, 4: 40};
 
-// 목표 트리를 리스트가 아니라 "여정을 탐험하는" 느낌의 세로 타임라인으로
-// 보여준다. 맨 위가 최종 목적지(🏆 대목표), 맨 아래가 오늘 당장 실천할
-// 일일 퀘스트(🌱)로, 위로 올라갈수록 더 큰 목표를 향해 나아가는 구조다.
+// ============================================================
+
+// 목표 트리를 리스트가 아니라 진짜 지도를 탐험하는 느낌으로 보여준다.
+// 맨 위가 최종 목적지(🏆 대목표, 산 정상), 맨 아래가 오늘 당장 실천할
+// 일일 퀘스트(🌱, 출발지)로, 좌우로 구불구불한 오솔길을 따라 올라간다.
 // 잠금 해제된 퀘스트는 탭해서 바로 완료할 수도 있다.
 class JourneyMapScreen extends ConsumerWidget {
   const JourneyMapScreen({super.key});
@@ -41,7 +106,7 @@ class JourneyMapScreen extends ConsumerWidget {
                       fontWeight: FontWeight.bold,
                       color: AppColors.textPrimary)),
               SizedBox(height: 4),
-              Text('맨 위 대목표를 향해 한 걸음씩 나아가는 여정을 확인해보세요.',
+              Text('맨 위 대목표를 향해 오솔길을 따라 한 걸음씩 나아가보세요.',
                   style: TextStyle(fontSize: 12, color: Colors.grey)),
             ],
           ),
@@ -63,26 +128,56 @@ class JourneyMapScreen extends ConsumerWidget {
                 );
               }
 
-              return ListView.builder(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                itemCount: ordered.length,
-                itemBuilder: (ctx, i) {
-                  final quest = ordered[i];
-                  final requiredLevel = quest.depth == 4
-                      ? 1
-                      : (cfg.tierUnlockLevelByDepth[quest.depth] ?? 1);
-                  final unlocked =
-                      quest.depth == 4 || userState.level >= requiredLevel;
-                  return _timelineNode(
-                    context,
-                    ref,
-                    quest,
-                    isFirst: i == 0,
-                    isLast: i == ordered.length - 1,
-                    unlocked: unlocked,
-                    requiredLevel: requiredLevel,
-                  );
-                },
+              final meta = ordered.map((q) {
+                final requiredLevel =
+                    q.depth == 4 ? 1 : (cfg.tierUnlockLevelByDepth[q.depth] ?? 1);
+                final unlocked =
+                    q.depth == 4 || userState.level >= requiredLevel;
+                return (quest: q, unlocked: unlocked, requiredLevel: requiredLevel);
+              }).toList();
+
+              // "여기부터 시작" 표시: 오늘의 실천 목표(맨 아래) 쪽부터 훑어
+              // 처음 만나는 미완료 항목을 다음 걸음으로 안내한다.
+              final reversedIdx = meta.reversed.toList().indexWhere(
+                  (m) => m.unlocked && m.quest.status != QuestStatus.completed);
+              final currentIndex =
+                  reversedIdx == -1 ? -1 : meta.length - 1 - reversedIdx;
+
+              final totalHeight =
+                  meta.length * nodeSpacing + topPadding + bottomPadding;
+
+              return SingleChildScrollView(
+                child: SizedBox(
+                  height: totalHeight,
+                  child: Stack(
+                    children: [
+                      const Positioned.fill(child: _MapBackground()),
+                      Positioned.fill(
+                        child: CustomPaint(
+                          painter: _TrailPainter(count: meta.length),
+                        ),
+                      ),
+                      for (var i = 0; i < meta.length; i++)
+                        Positioned(
+                          top: topPadding + i * nodeSpacing,
+                          left: 0,
+                          right: 0,
+                          child: Align(
+                            alignment:
+                                Alignment(zigzagPattern[i % zigzagPattern.length], 0),
+                            child: _mapNode(
+                              context,
+                              ref,
+                              meta[i].quest,
+                              unlocked: meta[i].unlocked,
+                              requiredLevel: meta[i].requiredLevel,
+                              isCurrent: i == currentIndex,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
               );
             },
             loading: () => const Center(
@@ -94,142 +189,101 @@ class JourneyMapScreen extends ConsumerWidget {
     );
   }
 
-  Widget _timelineNode(
+  Widget _mapNode(
     BuildContext context,
     WidgetRef ref,
     Quest quest, {
-    required bool isFirst,
-    required bool isLast,
     required bool unlocked,
     required int requiredLevel,
+    required bool isCurrent,
   }) {
     final color = AppColors.depthColors[quest.depth];
     final completed = quest.status == QuestStatus.completed;
-    final tierEmoji = _tierEmoji[quest.depth]!;
-    final tierLabel = _tierLabel[quest.depth]!;
-    final railLineColor = Colors.grey.withValues(alpha: 0.3);
+    final emoji = tierEmoji[quest.depth]!;
+    final label = tierLabel[quest.depth]!;
+    final pinSize = tierPinSize[quest.depth]!;
 
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+    return GestureDetector(
+      onTap: () =>
+          _onNodeTap(context, ref, quest, unlocked, completed, requiredLevel),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            width: 56,
-            child: Column(
-              children: [
-                Expanded(
-                  child: Container(
-                    width: 3,
-                    color: isFirst ? Colors.transparent : railLineColor,
-                  ),
-                ),
-                Container(
-                  width: 40,
-                  height: 40,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: !unlocked
-                        ? Colors.grey.withValues(alpha: 0.25)
-                        : (completed ? color : Colors.white),
-                    border: Border.all(
-                      color: !unlocked
-                          ? Colors.grey.withValues(alpha: 0.4)
-                          : color,
-                      width: 2,
-                    ),
-                  ),
-                  child: !unlocked
-                      ? const Icon(Icons.lock, size: 16, color: Colors.grey)
-                      : completed
-                          ? const Icon(Icons.check,
-                              size: 18, color: Colors.white)
-                          : Text(tierEmoji,
-                              style: const TextStyle(fontSize: 16)),
-                ),
-                Expanded(
-                  child: Container(
-                    width: 3,
-                    color: isLast ? Colors.transparent : railLineColor,
-                  ),
-                ),
+          if (isCurrent)
+            Container(
+              margin: const EdgeInsets.only(bottom: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: AppColors.streakBadgeFg,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Text('📍 여기부터!',
+                  style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold)),
+            ),
+          Container(
+            width: pinSize,
+            height: pinSize,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: !unlocked
+                  ? Colors.grey.withValues(alpha: 0.3)
+                  : (completed ? color : Colors.white),
+              border: Border.all(
+                color: !unlocked ? Colors.grey.withValues(alpha: 0.5) : color,
+                width: 3,
+              ),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.15),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2)),
               ],
             ),
+            child: !unlocked
+                ? Icon(Icons.lock, size: pinSize * 0.4, color: Colors.grey)
+                : completed
+                    ? Icon(Icons.check, size: pinSize * 0.45, color: Colors.white)
+                    : Text(emoji, style: TextStyle(fontSize: pinSize * 0.42)),
           ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: GestureDetector(
-                onTap: () => _onNodeTap(
-                    context, ref, quest, unlocked, completed, requiredLevel),
-                child: Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: !unlocked
-                        ? Colors.white.withValues(alpha: 0.5)
-                        : Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                        color: color.withValues(alpha: unlocked ? 0.4 : 0.15)),
-                    boxShadow: unlocked
-                        ? [
-                            BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.04),
-                                blurRadius: 6)
-                          ]
-                        : [],
+          const SizedBox(height: 6),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 122),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: unlocked ? 0.95 : 0.6),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: color.withValues(alpha: 0.3)),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    quest.title,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: !unlocked ? Colors.grey : AppColors.textPrimary,
+                      decoration: completed ? TextDecoration.lineThrough : null,
+                    ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: color.withValues(alpha: 0.12),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text('$tierEmoji $tierLabel',
-                                style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    color: color)),
-                          ),
-                          const Spacer(),
-                          if (!unlocked)
-                            Text('Lv.$requiredLevel 해금',
-                                style: const TextStyle(
-                                    fontSize: 10, color: Colors.grey)),
-                          if (completed)
-                            const Icon(Icons.check_circle,
-                                color: AppColors.success, size: 16),
-                        ],
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        quest.title,
+                  if (!unlocked)
+                    Text('Lv.$requiredLevel 해금',
+                        style: const TextStyle(fontSize: 9, color: Colors.grey))
+                  else if (!completed)
+                    Text('$label · EXP +${quest.rewardExp}',
                         style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: !unlocked
-                              ? Colors.grey
-                              : AppColors.textPrimary,
-                          decoration:
-                              completed ? TextDecoration.lineThrough : null,
-                        ),
-                      ),
-                      if (unlocked && !completed) ...[
-                        const SizedBox(height: 4),
-                        Text('탭해서 완료하기 · EXP +${quest.rewardExp}',
-                            style: const TextStyle(
-                                fontSize: 10, color: Colors.grey)),
-                      ],
-                    ],
-                  ),
-                ),
+                            fontSize: 9,
+                            color: color,
+                            fontWeight: FontWeight.bold)),
+                ],
               ),
             ),
           ),
@@ -298,4 +352,90 @@ class JourneyMapScreen extends ConsumerWidget {
       );
     }
   }
+}
+
+// 하늘 → 산 → 숲 → 초원으로 이어지는 배경과, mapDecorations 리스트에 정의된
+// 장식용 지형 이모지로 실제 지도 같은 분위기를 낸다. 배경을 이미지로 바꾸고
+// 싶다면 이 위젯의 Container만 Image.asset으로 교체하면 된다 (MAP_DESIGN.md 참고).
+class _MapBackground extends StatelessWidget {
+  const _MapBackground();
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: mapBackgroundColors,
+              stops: mapBackgroundStops,
+            ),
+          ),
+        ),
+        for (final d in mapDecorations)
+          Positioned(
+            top: d.top,
+            bottom: d.bottom,
+            left: d.left,
+            right: d.right,
+            child: Text(d.emoji, style: TextStyle(fontSize: d.fontSize)),
+          ),
+      ],
+    );
+  }
+}
+
+// 지그재그로 놓인 핀들을 잇는, 흙길처럼 보이는 점선 오솔길을 그린다.
+class _TrailPainter extends CustomPainter {
+  final int count;
+  const _TrailPainter({required this.count});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (count < 2) return;
+    const margin = 54.0;
+    final points = List.generate(count, (i) {
+      final x = size.width / 2 +
+          zigzagPattern[i % zigzagPattern.length] * (size.width / 2 - margin);
+      final y = topPadding + i * nodeSpacing + 27;
+      return Offset(x, y);
+    });
+
+    final basePaint = Paint()
+      ..color = trailBaseColor
+      ..strokeWidth = trailBaseWidth
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
+    final dashPaint = Paint()
+      ..color = trailDashColor
+      ..strokeWidth = trailDashWidth
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
+
+    for (var i = 0; i < points.length - 1; i++) {
+      canvas.drawLine(points[i], points[i + 1], basePaint);
+    }
+    for (var i = 0; i < points.length - 1; i++) {
+      _drawDashed(canvas, points[i], points[i + 1], dashPaint);
+    }
+  }
+
+  void _drawDashed(Canvas canvas, Offset a, Offset b, Paint paint) {
+    final total = (b - a).distance;
+    if (total == 0) return;
+    final dir = (b - a) / total;
+    var covered = 0.0;
+    while (covered < total) {
+      final start = a + dir * covered;
+      final end = a + dir * math.min(covered + trailDashLength, total);
+      canvas.drawLine(start, end, paint);
+      covered += trailDashLength + trailGapLength;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _TrailPainter oldDelegate) =>
+      oldDelegate.count != count;
 }

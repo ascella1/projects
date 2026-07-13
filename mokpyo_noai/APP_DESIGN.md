@@ -3,6 +3,10 @@
 이 앱의 디자인은 mokpyo(원본)의 초록 정원 라이트 테마를 그대로 재현하고 있습니다.
 디자인을 바꾸고 싶을 때 "어떤 파일을 봐야 하는지"를 아래 우선순위대로 확인하세요.
 
+> 동물 캐릭터/아이템을 이모지에서 실제 이미지로 바꾸는 방법은 별도로
+> `CHARACTER_DESIGN.md`에, 여정 지도(배경/길/핀 디자인)를 커스터마이징하는
+> 방법은 `MAP_DESIGN.md`에 정리했습니다.
+
 ## 1. 색상만 바꾸고 싶다면 → `lib/core/theme/app_colors.dart`
 
 앱 전체에서 쓰이는 색이 전부 여기 상수로 정의돼 있습니다. 이 파일의 값만 바꾸면
@@ -38,14 +42,28 @@
 
 ## 3. 화면 레이아웃/구성 요소를 바꾸고 싶다면
 
-- **메인 5개 탭 + 다이얼로그**: `lib/features/home/presentation/views/home_screen.dart`
-  - 나의 정원 / 상자 오픈 / 인벤토리 / 업적&스탯 / 여정 지도 탭의 실제 배치, 카드 구성, 그리드 개수 등.
-  - 레벨업/아이템 획득/스트릭 보상 등 모든 팝업(다이얼로그)도 이 파일 하단에 있습니다.
-  - 캐릭터 옆 "🍖 먹이주기"/"🎾 놀아주기" 버튼과 파티클 애니메이션도 `_buildTabGarden`과
-    `_onFeedOrPlay`/`_interactionButton`에 있습니다. 대사 문구는 `character_util.dart`의
-    `_feedSpeech`/`_playSpeech`.
-  - "🌱 오늘의 실천 목표" 헤더의 + 버튼(즉석 목표 추가)은 `_questSectionHeaderWithAdd`/
-    `_showAddAdHocQuestDialog`에 있습니다.
+메인 화면은 셸(shell) + 탭별 파일로 나뉘어 있습니다.
+
+- **셸(하단 탭 전환 + 전역 다이얼로그)**: `lib/features/home/presentation/views/home_screen.dart`
+  - 하단 탭 순서/아이콘/라벨은 `BottomNavigationBar`의 `items`와 `_buildMainApp()`의
+    `switch`문에 있습니다. 이 둘의 순서를 반드시 같이 맞춰야 합니다.
+  - 스트릭 보상(🔥)/등급 해금(🔓) 다이얼로그처럼 "어느 탭에 있든 떠야 하는" 전역
+    팝업만 여기 있습니다. 특정 탭 전용 팝업은 각 탭 파일에 있습니다.
+- **탭별 파일**: `lib/features/home/presentation/views/tabs/`
+  - `garden_tab.dart` — 나의 정원. 상단 유저 정보 카드, 캐릭터(탭 반응/기분 표시/
+    "🍖 먹이주기"·"🎾 놀아주기" 상호작용은 `_onFeedOrPlay`/`_interactionButton`,
+    "체크인" 다이얼로그는 `_showCheckInDialog`), 오늘의 실천 목표 목록(즉석 추가는
+    `_questSectionHeaderWithAdd`/`_showAddAdHocQuestDialog`), 퀘스트 완료/레벨업
+    다이얼로그(`_showSuccessRewardDialog`/`_showLevelUpDialog`).
+  - `loot_box_tab.dart` — 상자 오픈. 상자 흔들기 애니메이션과 아이템 획득 다이얼로그.
+  - `inventory_tab.dart` — 인벤토리. 악세사리 그리드, 장착/해제.
+  - `achievements_tab.dart` — 업적 & 스탯. 능력치 바, 달성 기록, 데이터 초기화.
+  - 이 파일들은 전부 `lib/core/services/item_service.dart`의 `itemListProvider`를
+    통해 아이템 목록을 각자 독립적으로 읽습니다 — 한 탭의 상태가 다른 탭에 영향을
+    주지 않으므로, 탭 하나만 골라서 안전하게 수정할 수 있습니다.
+- **여정 지도(스킬트리형 시각화)**: `lib/features/home/presentation/views/journey_map_screen.dart`
+  - 하단 탭의 두 번째 탭. 대목표(🏆, 맨 위)부터 일일퀘스트(🌱, 맨 아래)까지 구불구불한
+    오솔길로 보여주는 화면. 디자인 커스터마이징은 `MAP_DESIGN.md` 참고.
 - **목표 입력 위저드(7단계)**: `lib/features/onboarding/presentation/views/goal_wizard_screen.dart`
   - 캐릭터 선택 → 대목표 → 스탯 선택 → 중목표 → 소목표 → 일일퀘스트 → 확인 화면의
     레이아웃, 문구, 카드 스타일.
@@ -53,13 +71,8 @@
     `lib/features/onboarding/presentation/utils/wizard_reactions.dart`에 있습니다.
     AI 호출 없이 이전 답변(목표 텍스트, 선택한 스탯, 항목 개수)을 문구에 끼워
     넣는 방식이라, 반응 문구를 더 추가/수정하고 싶으면 이 파일만 고치면 됩니다.
-- **여정 지도(스킬트리형 시각화)**: `lib/features/home/presentation/views/journey_map_screen.dart`
-  - 대목표(🏆, 맨 위)부터 일일퀘스트(🌱, 맨 아래)까지 세로 타임라인으로 보여주는
-    화면. 노드 크기/색/잠금 표시 스타일은 `_timelineNode` 함수에서, 탭했을 때의
-    동작(완료 처리/레벨업 다이얼로그)은 `_onNodeTap`에서 조정합니다. "나의 정원"
-    탭 상단의 "🗺️ 여정 지도 보기" 버튼(`home_screen.dart`)이 진입점입니다.
 
-이 두 파일은 색상은 `AppColors`를 참조하되, 여백/정렬/위젯 구조(Column, Row, Card
+이 파일들은 색상은 `AppColors`를 참조하되, 여백/정렬/위젯 구조(Column, Row, Card
 배치 등)는 직접 정의합니다. "버튼 위치를 바꾸고 싶다", "탭 순서를 바꾸고 싶다" 같은
 요청은 여기를 수정해야 합니다.
 
@@ -78,12 +91,12 @@
 - **기분별 대사 문구** → `character_util.dart`의 `_speechPool` 맵. 캐릭터 타입(cat/dog/rabbit/fox) ×
   기분(happy/neutral/hungry)별로 문구 리스트가 있고, 탭할 때마다 그중 하나가 무작위로 나갑니다.
   문구를 추가/수정하고 싶으면 이 리스트에 문자열만 추가하면 됩니다.
-- **기분에 따른 시각 효과(반투명, 기울임, 우측 상단 이모지)** → `home_screen.dart`의
-  `_buildTabGarden` 안, 캐릭터를 그리는 `AnimatedBuilder`/`Opacity`/`moodIndicatorEmoji` 부분.
-- **탭했을 때 반응(바운스 애니메이션)** → `home_screen.dart`의 `_characterAnimController`와
+- **기분에 따른 시각 효과(반투명, 기울임, 우측 상단 이모지)** → `tabs/garden_tab.dart`의
+  캐릭터를 그리는 `AnimatedBuilder`/`Opacity`/`moodIndicatorEmoji` 부분.
+- **탭했을 때 반응(바운스 애니메이션)** → `tabs/garden_tab.dart`의 `_characterAnimController`와
   `_onCharacterTap`. 애니메이션 길이/세기를 바꾸려면 `AnimationController`의 `duration`과
   `bounce`/`wiggle` 계산식을 수정하세요.
-- **하루 첫 탭에 뜨는 "체크인" 다이얼로그**(오늘 루틴 진행 상황 보고) → `home_screen.dart`의
+- **하루 첫 탭에 뜨는 "체크인" 다이얼로그**(오늘 루틴 진행 상황 보고) → `tabs/garden_tab.dart`의
   `_showCheckInDialog`. 문구/레이아웃을 이 함수에서 바꿀 수 있습니다.
 - `stat_util.dart` — 지식/커리어/체력/자산/소통 각각의 이모지·라벨·색(`AppColors.statXxx` 참조).
 
@@ -105,6 +118,6 @@
 ---
 
 **요약**: 색만 바꾼다 → `app_colors.dart`. 모양/여백/폰트 크기 같은 전역 스타일 →
-`app_theme.dart`. 화면 배치 자체를 바꾼다 → `home_screen.dart` 또는
-`goal_wizard_screen.dart`. 텍스트 리소스(아이템/능력치 이름) → `core/utils/` 또는
-`assets/data/*.json`.
+`app_theme.dart`. 탭 순서/전역 팝업 → `home_screen.dart`. 특정 탭의 배치 자체를
+바꾼다 → `tabs/` 안의 해당 탭 파일. 목표 입력 위저드 → `goal_wizard_screen.dart`.
+텍스트 리소스(아이템/능력치 이름) → `core/utils/` 또는 `assets/data/*.json`.
