@@ -1,0 +1,16 @@
+{
+  "name": "hyetaek-proxy-server",
+  "version": "1.0.0",
+  "description": "온통청년 청년정책 Open API를 위한 경량 프록시 서버 (API 키를 클라이언트에 노출하지 않기 위함)",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "fast-xml-parser": "^4.5.0"
+  }
+}
