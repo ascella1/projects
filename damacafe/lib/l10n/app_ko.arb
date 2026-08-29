@@ -1,0 +1,102 @@
+{
+  "@@locale": "ko",
+  "appTitle": "펫카페",
+  "@appTitle": { "description": "앱 이름" },
+
+  "homeTitle": "🏠 우리 집",
+  "cafeTitle": "☕ 카페",
+  "shopTitle": "상점",
+  "commuteResultTitle": "오늘의 정산",
+
+  "errorMessage": "오류가 발생했어요: {error}",
+  "@errorMessage": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+
+  "gaugeSatiationLabel": "배고픔(포만감)",
+  "gaugeCleanlinessLabel": "청결도",
+  "gaugeAffectionLabel": "애정도",
+
+  "clockInButton": "출근하기",
+  "clockOutButton": "퇴근하기",
+
+  "moodHappyReaction": "오늘도 좋은 하루예요!",
+  "moodMopingReaction": "음... 조금 심심해요.",
+  "moodSulkingReaction": "흥, 저 삐졌어요.",
+  "moodLongingReaction": "많이... 보고 싶었어요.",
+
+  "feedReactionLiked": "냠냠! 최고예요 🐾",
+  "feedReactionNeutral": "음... 그냥 먹을게요.",
+  "feedReactionDisliked": "으엑... 억지로 먹었어요.",
+
+  "washButton": "문질러 씻기기",
+
+  "playButton": "놀아주기",
+  "playSuccessMessage": "신나게 놀았어요! 애정도 상승, 코인 획득 🎉",
+  "swipeMinigameTitle": "화살표 방향으로 스와이프!",
+  "stopPlayingButton": "그만하기",
+
+  "sleepDayLabel": "낮",
+  "sleepNightLabel": "밤",
+
+  "ordersServedToday": "오늘 처리한 주문: {count}건",
+  "@ordersServedToday": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "serveCompleteMessage": "{stars} 서빙 완료!",
+  "@serveCompleteMessage": {
+    "placeholders": { "stars": { "type": "String" } }
+  },
+
+  "newRecipeHint": "처음 만드는 레시피예요! 미니게임을 거쳐야 해요.",
+  "cookNowButton": "바로 요리하기",
+  "cookWithMinigameButton": "미니게임으로 요리하기",
+
+  "npcOrderLabel": "{npcName} 손님의 주문",
+  "@npcOrderLabel": {
+    "placeholders": { "npcName": { "type": "String" } }
+  },
+
+  "shopCategoryFood": "음식",
+  "shopCategoryToy": "장난감",
+  "shopCategoryBed": "침대",
+
+  "careBonusLabel": "케어 보너스 +{value}",
+  "@careBonusLabel": {
+    "placeholders": { "value": { "type": "int" } }
+  },
+
+  "ownedLabel": "보유중",
+
+  "purchaseSuccessMessage": "{itemName} 구매 완료!",
+  "@purchaseSuccessMessage": {
+    "placeholders": { "itemName": { "type": "String" } }
+  },
+
+  "purchaseFailMessage": "코인이 부족해요.",
+
+  "priceCoinsLabel": "{price} 코인",
+  "@priceCoinsLabel": {
+    "placeholders": { "price": { "type": "int" } }
+  },
+
+  "cookingScreenTitle": "{recipeName} 만들기",
+  "@cookingScreenTitle": {
+    "placeholders": { "recipeName": { "type": "String" } }
+  },
+
+  "cookingInstructions": "마커가 초록 구간에 있을 때 화면을 탭하세요!",
+
+  "settlementCoinsEarned": "획득한 코인: {coins}",
+  "@settlementCoinsEarned": {
+    "placeholders": { "coins": { "type": "int" } }
+  },
+
+  "settlementConditionScore": "컨디션 점수: {score}점",
+  "@settlementConditionScore": {
+    "placeholders": { "score": { "type": "int" } }
+  },
+
+  "backHomeButton": "집으로 돌아가기"
+}

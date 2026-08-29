@@ -1,0 +1,569 @@
+{
+  "_comment": "QuestDay 퀘스트 데이터베이스 (quest_database.dart 기준 참조용)",
+  "_total": 60,
+  "_categories": ["exploration", "social", "creative", "thinking", "action", "relationship", "random"],
+  "_comfort_levels": {
+    "safe": "평소와 거의 비슷하지만 조금 다른 행동",
+    "normal": "확실히 새로운 경험",
+    "challenge": "약간 불편하지만 해볼 만한 행동",
+    "crazy": "평소라면 절대 하지 않을 행동"
+  },
+  "_stat_keys": ["exploration", "social", "courage", "creativity", "spontaneity", "adaptability", "action", "thinking", "relationship"],
+
+  "quests": [
+
+    // ── EXPLORATION ──────────────────────────────────────────────────────────
+    {
+      "id": "exp_s_01",
+      "category": "exploration",
+      "comfort": "safe",
+      "difficulty": 1,
+      "baseXP": 60,
+      "emoji": "🚶",
+      "title": "한 블록 다른 길",
+      "description": "평소 가던 길에서 한 블록만 다른 길로 걸어보세요.",
+      "statBoosts": { "exploration": 3, "spontaneity": 2 }
+    },
+    {
+      "id": "exp_s_02",
+      "category": "exploration",
+      "comfort": "safe",
+      "difficulty": 1,
+      "baseXP": 50,
+      "emoji": "🥤",
+      "title": "처음 보는 음료 고르기",
+      "description": "평소 주문하던 음료 대신, 메뉴판에서 한 번도 마셔보지 않은 음료를 골라보세요.",
+      "statBoosts": { "exploration": 2, "adaptability": 2 }
+    },
+    {
+      "id": "exp_s_03",
+      "category": "exploration",
+      "comfort": "safe",
+      "difficulty": 1,
+      "baseXP": 55,
+      "emoji": "🌿",
+      "title": "10분 폰 없이 걷기",
+      "description": "퇴근 또는 하교 후, 10분 동안 휴대폰 없이 걸어보세요.",
+      "statBoosts": { "exploration": 2, "courage": 2 }
+    },
+    {
+      "id": "exp_s_04",
+      "category": "exploration",
+      "comfort": "safe",
+      "difficulty": 1,
+      "baseXP": 45,
+      "emoji": "🏪",
+      "title": "간판 읽기",
+      "description": "평소 아무 생각 없이 지나쳤던 간판이나 가게 이름 하나를 제대로 읽어보세요.",
+      "statBoosts": { "thinking": 3 }
+    },
+    {
+      "id": "exp_n_01",
+      "category": "exploration",
+      "comfort": "normal",
+      "difficulty": 2,
+      "baseXP": 100,
+      "emoji": "☕",
+      "title": "새로운 카페 입장",
+      "description": "한 번도 가보지 않은 카페에 혼자 들어가보세요.",
+      "statBoosts": { "exploration": 5, "courage": 3 }
+    },
+    {
+      "id": "exp_n_02",
+      "category": "exploration",
+      "comfort": "normal",
+      "difficulty": 2,
+      "baseXP": 90,
+      "emoji": "🗺️",
+      "title": "다른 경로로 귀가",
+      "description": "퇴근 또는 하교 후, 평소와 완전히 다른 경로로 집에 가보세요.",
+      "statBoosts": { "exploration": 4, "spontaneity": 3 }
+    },
+    {
+      "id": "exp_n_03",
+      "category": "exploration",
+      "comfort": "normal",
+      "difficulty": 2,
+      "baseXP": 85,
+      "emoji": "🛍️",
+      "title": "한 번도 안 들어간 가게",
+      "description": "동네에서 지나치기만 했던 가게에 오늘 처음 들어가보세요.",
+      "statBoosts": { "exploration": 4, "courage": 2 }
+    },
+    {
+      "id": "exp_n_04",
+      "category": "exploration",
+      "comfort": "normal",
+      "difficulty": 2,
+      "baseXP": 95,
+      "emoji": "🌳",
+      "title": "처음 가는 공원",
+      "description": "집 근처에서 한 번도 가지 않았던 공원이나 광장을 찾아가보세요.",
+      "statBoosts": { "exploration": 5, "action": 2 }
+    },
+    {
+      "id": "exp_c_01",
+      "category": "exploration",
+      "comfort": "challenge",
+      "difficulty": 3,
+      "baseXP": 150,
+      "emoji": "🏙️",
+      "title": "낯선 동네 30분 탐험",
+      "description": "한 번도 가보지 않은 동네에서 혼자 30분 동안 걸어보세요.",
+      "statBoosts": { "exploration": 7, "courage": 5 }
+    },
+    {
+      "id": "exp_c_02",
+      "category": "exploration",
+      "comfort": "challenge",
+      "difficulty": 3,
+      "baseXP": 130,
+      "emoji": "🍜",
+      "title": "처음 보는 음식 주문",
+      "description": "한 번도 먹어본 적 없는 음식이나 요리를 오늘 주문해보세요.",
+      "statBoosts": { "exploration": 5, "adaptability": 5 }
+    },
+    {
+      "id": "exp_z_01",
+      "category": "exploration",
+      "comfort": "crazy",
+      "difficulty": 5,
+      "baseXP": 250,
+      "emoji": "🚇",
+      "title": "목적지 없이 지하철 타기",
+      "description": "퇴근 후 목적지를 정하지 말고 지하철에 타세요. 세 정거장 이동 후 그 역 주변을 탐험해보세요.",
+      "statBoosts": { "exploration": 10, "spontaneity": 8, "courage": 5 }
+    },
+    {
+      "id": "exp_z_02",
+      "category": "exploration",
+      "comfort": "crazy",
+      "difficulty": 4,
+      "baseXP": 200,
+      "emoji": "🎲",
+      "title": "메뉴판 없이 주문",
+      "description": "처음 가는 식당에서 메뉴판을 보지 않고 직원에게 '오늘 가장 추천하는 메뉴'를 달라고 해보세요.",
+      "statBoosts": { "exploration": 7, "social": 5, "courage": 5 }
+    },
+
+    // ── SOCIAL ───────────────────────────────────────────────────────────────
+    {
+      "id": "soc_s_01",
+      "category": "social",
+      "comfort": "safe",
+      "difficulty": 1,
+      "baseXP": 50,
+      "emoji": "😊",
+      "title": "스쳐가는 사람에게 미소",
+      "description": "오늘 지나치는 사람 한 명에게 자연스럽게 미소를 지어보세요.",
+      "statBoosts": { "social": 3 }
+    },
+    {
+      "id": "soc_s_02",
+      "category": "social",
+      "comfort": "safe",
+      "difficulty": 2,
+      "baseXP": 80,
+      "emoji": "💬",
+      "title": "직원에게 짧은 인사",
+      "description": "카페나 편의점 직원에게 '날씨 좋네요' 한 마디를 건네보세요.",
+      "statBoosts": { "social": 4, "courage": 2 }
+    },
+    {
+      "id": "soc_n_01",
+      "category": "social",
+      "comfort": "normal",
+      "difficulty": 2,
+      "baseXP": 95,
+      "emoji": "📱",
+      "title": "안 보이던 지인에게 안부",
+      "description": "최근 연락하지 않았던 지인에게 짧은 안부 메시지를 보내보세요.",
+      "statBoosts": { "social": 5, "relationship": 3 }
+    },
+    {
+      "id": "soc_n_02",
+      "category": "social",
+      "comfort": "normal",
+      "difficulty": 2,
+      "baseXP": 85,
+      "emoji": "📸",
+      "title": "오늘 처음 찍은 사진 공유",
+      "description": "오늘 처음 찍은 사진 한 장을 친구에게 전송하고 이유를 짧게 설명해보세요.",
+      "statBoosts": { "social": 4, "creativity": 2 }
+    },
+    {
+      "id": "soc_n_03",
+      "category": "social",
+      "comfort": "normal",
+      "difficulty": 3,
+      "baseXP": 120,
+      "emoji": "🧋",
+      "title": "카페에서 메뉴 추천받기",
+      "description": "카페에서 직원에게 '오늘 뭐가 제일 맛있어요?'라고 진심으로 물어보세요.",
+      "statBoosts": { "social": 5, "courage": 4 }
+    },
+    {
+      "id": "soc_c_01",
+      "category": "social",
+      "comfort": "challenge",
+      "difficulty": 3,
+      "baseXP": 140,
+      "emoji": "🤝",
+      "title": "잘 안 말걸던 동료에게 먼저",
+      "description": "평소 잘 대화하지 않는 동료에게 먼저 말을 걸어보세요.",
+      "statBoosts": { "social": 7, "courage": 5 }
+    },
+    {
+      "id": "soc_z_01",
+      "category": "social",
+      "comfort": "crazy",
+      "difficulty": 4,
+      "baseXP": 200,
+      "emoji": "🗣️",
+      "title": "낯선 사람에게 질문 하나",
+      "description": "길을 걷다가 낯선 사람에게 자연스러운 질문 하나를 해보세요.",
+      "statBoosts": { "social": 8, "courage": 7 }
+    },
+
+    // ── CREATIVE ─────────────────────────────────────────────────────────────
+    {
+      "id": "cre_s_01",
+      "category": "creative",
+      "comfort": "safe",
+      "difficulty": 1,
+      "baseXP": 55,
+      "emoji": "📷",
+      "title": "눈에 띄는 장면 찍기",
+      "description": "오늘 이동 중에 가장 인상적으로 느껴지는 장면을 스마트폰으로 한 장 찍어보세요.",
+      "statBoosts": { "creativity": 3 }
+    },
+    {
+      "id": "cre_s_02",
+      "category": "creative",
+      "comfort": "safe",
+      "difficulty": 1,
+      "baseXP": 50,
+      "emoji": "📝",
+      "title": "3줄 일기",
+      "description": "오늘 있었던 일을 딱 3줄로 써보세요.",
+      "statBoosts": { "creativity": 3, "thinking": 2 }
+    },
+    {
+      "id": "cre_s_03",
+      "category": "creative",
+      "comfort": "safe",
+      "difficulty": 1,
+      "baseXP": 45,
+      "emoji": "🎭",
+      "title": "이모지 5개로 오늘 표현하기",
+      "description": "오늘 느낀 감정 또는 있었던 일을 이모지 5개로만 표현해보세요.",
+      "statBoosts": { "creativity": 4 }
+    },
+    {
+      "id": "cre_n_01",
+      "category": "creative",
+      "comfort": "normal",
+      "difficulty": 2,
+      "baseXP": 100,
+      "emoji": "🎨",
+      "title": "주변 물건으로 작은 작품",
+      "description": "지금 주변에 있는 물건들로 작은 배치 작품을 만들어보세요.",
+      "statBoosts": { "creativity": 5, "spontaneity": 3 }
+    },
+    {
+      "id": "cre_n_02",
+      "category": "creative",
+      "comfort": "normal",
+      "difficulty": 2,
+      "baseXP": 90,
+      "emoji": "🎵",
+      "title": "낯선 장르의 음악 듣기",
+      "description": "평소 절대 안 듣는 장르의 음악 플레이리스트를 하나 찾아 10분 동안 들어보세요.",
+      "statBoosts": { "creativity": 4, "adaptability": 3 }
+    },
+    {
+      "id": "cre_n_03",
+      "category": "creative",
+      "comfort": "normal",
+      "difficulty": 2,
+      "baseXP": 110,
+      "emoji": "✏️",
+      "title": "오늘의 풍경 스케치",
+      "description": "오늘 본 풍경이나 물건을 간단하게 스케치해보세요.",
+      "statBoosts": { "creativity": 6, "thinking": 2 }
+    },
+    {
+      "id": "cre_c_01",
+      "category": "creative",
+      "comfort": "challenge",
+      "difficulty": 3,
+      "baseXP": 140,
+      "emoji": "🎤",
+      "title": "혼자 노래 한 곡 끝까지",
+      "description": "혼자 있는 공간에서 좋아하는 노래 한 곡을 처음부터 끝까지 불러보세요.",
+      "statBoosts": { "creativity": 6, "courage": 4 }
+    },
+    {
+      "id": "cre_c_02",
+      "category": "creative",
+      "comfort": "challenge",
+      "difficulty": 3,
+      "baseXP": 130,
+      "emoji": "🖊️",
+      "title": "오늘을 시로 쓰기",
+      "description": "오늘 하루를 4줄짜리 시로 표현해보세요.",
+      "statBoosts": { "creativity": 7, "thinking": 4 }
+    },
+    {
+      "id": "cre_z_01",
+      "category": "creative",
+      "comfort": "crazy",
+      "difficulty": 4,
+      "baseXP": 190,
+      "emoji": "🥁",
+      "title": "30초 즉흥 연주",
+      "description": "어떤 물건이든 악기처럼 사용해 30초짜리 즉흥 퍼포먼스를 해보세요.",
+      "statBoosts": { "creativity": 8, "spontaneity": 7, "courage": 4 }
+    },
+
+    // ── THINKING ─────────────────────────────────────────────────────────────
+    {
+      "id": "thi_s_01",
+      "category": "thinking",
+      "comfort": "safe",
+      "difficulty": 1,
+      "baseXP": 55,
+      "emoji": "🔍",
+      "title": "평소 못 본 것 하나 찾기",
+      "description": "오늘 이동 중 평소에 눈치채지 못했던 것을 하나 발견해보세요.",
+      "statBoosts": { "thinking": 3, "exploration": 2 }
+    },
+    {
+      "id": "thi_s_02",
+      "category": "thinking",
+      "comfort": "safe",
+      "difficulty": 1,
+      "baseXP": 50,
+      "emoji": "💭",
+      "title": "스쳐간 사람의 하루 상상하기",
+      "description": "오늘 지나친 사람 중 한 명을 골라 그 사람의 오늘 하루를 마음속으로 상상해보세요.",
+      "statBoosts": { "thinking": 4 }
+    },
+    {
+      "id": "thi_n_01",
+      "category": "thinking",
+      "comfort": "normal",
+      "difficulty": 2,
+      "baseXP": 100,
+      "emoji": "⚖️",
+      "title": "반대 의견으로 스스로 설득",
+      "description": "평소 강하게 믿는 생각 하나를 선택해, 그 반대 입장에서 스스로를 설득해보세요.",
+      "statBoosts": { "thinking": 6, "adaptability": 3 }
+    },
+    {
+      "id": "thi_n_02",
+      "category": "thinking",
+      "comfort": "normal",
+      "difficulty": 2,
+      "baseXP": 90,
+      "emoji": "❓",
+      "title": "오늘 대화에서 왜? 세 번 더",
+      "description": "오늘 누군가와 대화할 때 평소보다 '왜?'를 세 번 더 물어보세요.",
+      "statBoosts": { "thinking": 5, "social": 2 }
+    },
+    {
+      "id": "thi_c_01",
+      "category": "thinking",
+      "comfort": "challenge",
+      "difficulty": 3,
+      "baseXP": 130,
+      "emoji": "🤔",
+      "title": "당연한 것에 의문 품기",
+      "description": "오늘 당연하다고 생각했던 것 하나에 '왜 이렇게 해야 하지?'라는 의문을 품어보세요.",
+      "statBoosts": { "thinking": 7, "courage": 3 }
+    },
+
+    // ── ACTION ───────────────────────────────────────────────────────────────
+    {
+      "id": "act_s_01",
+      "category": "action",
+      "comfort": "safe",
+      "difficulty": 1,
+      "baseXP": 60,
+      "emoji": "⚡",
+      "title": "10분 빠르게 걷기",
+      "description": "오늘 퇴근 또는 하교 후 10분 동안 평소보다 조금 빠르게 걸어보세요.",
+      "statBoosts": { "action": 3 }
+    },
+    {
+      "id": "act_s_02",
+      "category": "action",
+      "comfort": "safe",
+      "difficulty": 1,
+      "baseXP": 50,
+      "emoji": "🪜",
+      "title": "엘리베이터 대신 계단",
+      "description": "오늘 이동 중 엘리베이터나 에스컬레이터 대신 계단을 이용해보세요.",
+      "statBoosts": { "action": 4, "courage": 1 }
+    },
+    {
+      "id": "act_n_01",
+      "category": "action",
+      "comfort": "normal",
+      "difficulty": 2,
+      "baseXP": 100,
+      "emoji": "🌆",
+      "title": "30분 바깥 걷기",
+      "description": "30분 동안 목적 없이 밖에서 걸어보세요. 이어폰 없이 걸으면 더 효과적입니다.",
+      "statBoosts": { "action": 5, "thinking": 2 }
+    },
+    {
+      "id": "act_n_02",
+      "category": "action",
+      "comfort": "normal",
+      "difficulty": 2,
+      "baseXP": 95,
+      "emoji": "🏋️",
+      "title": "처음 보는 운동 영상 따라하기",
+      "description": "유튜브에서 한 번도 해본 적 없는 운동 영상을 찾아서 10분만 따라해보세요.",
+      "statBoosts": { "action": 5, "adaptability": 3 }
+    },
+    {
+      "id": "act_c_01",
+      "category": "action",
+      "comfort": "challenge",
+      "difficulty": 4,
+      "baseXP": 180,
+      "emoji": "🧗",
+      "title": "새로운 운동 시도",
+      "description": "평소 한 번도 해보지 않은 운동을 오늘 시도해보세요. (클라이밍, 요가, 탁구 등)",
+      "statBoosts": { "action": 7, "courage": 5, "exploration": 3 }
+    },
+    {
+      "id": "act_z_01",
+      "category": "action",
+      "comfort": "crazy",
+      "difficulty": 5,
+      "baseXP": 240,
+      "emoji": "🎯",
+      "title": "즉흥 활동 예약",
+      "description": "지금 이 순간, 평소 절대 하지 않을 것 같은 활동을 즉흥적으로 예약하거나 신청해보세요.",
+      "statBoosts": { "action": 8, "spontaneity": 10, "courage": 6 }
+    },
+
+    // ── RELATIONSHIP ─────────────────────────────────────────────────────────
+    {
+      "id": "rel_s_01",
+      "category": "relationship",
+      "comfort": "safe",
+      "difficulty": 1,
+      "baseXP": 60,
+      "emoji": "❤️",
+      "title": "가족에게 '요즘 어때?' 묻기",
+      "description": "가족 한 명에게 오늘 '요즘 어때?'라고 먼저 물어보세요. 문자도 괜찮습니다.",
+      "statBoosts": { "relationship": 4, "social": 2 }
+    },
+    {
+      "id": "rel_s_02",
+      "category": "relationship",
+      "comfort": "safe",
+      "difficulty": 1,
+      "baseXP": 55,
+      "emoji": "🙏",
+      "title": "친구에게 감사 메시지",
+      "description": "친구 한 명을 떠올리며 짧은 감사 메시지를 보내보세요. 이유는 사소해도 됩니다.",
+      "statBoosts": { "relationship": 4, "social": 3 }
+    },
+    {
+      "id": "rel_n_01",
+      "category": "relationship",
+      "comfort": "normal",
+      "difficulty": 2,
+      "baseXP": 100,
+      "emoji": "🔗",
+      "title": "오래된 친구에게 연락",
+      "description": "최근 6개월 이상 연락하지 않은 친구에게 오늘 연락해보세요.",
+      "statBoosts": { "relationship": 5, "social": 4, "courage": 2 }
+    },
+    {
+      "id": "rel_n_02",
+      "category": "relationship",
+      "comfort": "normal",
+      "difficulty": 2,
+      "baseXP": 110,
+      "emoji": "💝",
+      "title": "직접 감사 표현",
+      "description": "소중한 사람에게 문자가 아닌 직접 말로 감사하다고 전해보세요.",
+      "statBoosts": { "relationship": 6, "courage": 4 }
+    },
+    {
+      "id": "rel_c_01",
+      "category": "relationship",
+      "comfort": "challenge",
+      "difficulty": 3,
+      "baseXP": 150,
+      "emoji": "🤗",
+      "title": "친구에게 갑자기 만나자",
+      "description": "친구 한 명에게 '지금 시간 돼? 잠깐 볼래?'라고 즉흥적으로 연락해보세요.",
+      "statBoosts": { "relationship": 7, "spontaneity": 6, "social": 4 }
+    },
+
+    // ── RANDOM ───────────────────────────────────────────────────────────────
+    {
+      "id": "rnd_01",
+      "category": "random",
+      "comfort": "normal",
+      "difficulty": 2,
+      "baseXP": 90,
+      "emoji": "🧘",
+      "title": "5분 명상",
+      "description": "지금 바로 5분 동안 눈을 감고 호흡에만 집중해보세요.",
+      "statBoosts": { "thinking": 4, "adaptability": 3 }
+    },
+    {
+      "id": "rnd_02",
+      "category": "random",
+      "comfort": "safe",
+      "difficulty": 1,
+      "baseXP": 70,
+      "emoji": "🪙",
+      "title": "동전으로 결정",
+      "description": "오늘 작은 선택 하나를 동전 던지기로 결정해보세요.",
+      "statBoosts": { "spontaneity": 5 }
+    },
+    {
+      "id": "rnd_03",
+      "category": "random",
+      "comfort": "normal",
+      "difficulty": 2,
+      "baseXP": 85,
+      "emoji": "🎯",
+      "title": "오늘의 다짐 하나",
+      "description": "오늘 하루 동안 지킬 작은 규칙 하나를 스스로 만들어보세요.",
+      "statBoosts": { "courage": 3, "adaptability": 3 }
+    },
+    {
+      "id": "rnd_04",
+      "category": "random",
+      "comfort": "safe",
+      "difficulty": 1,
+      "baseXP": 65,
+      "emoji": "📋",
+      "title": "버킷리스트 하나 적기",
+      "description": "언젠가 해보고 싶은 것을 딱 하나 적어두세요.",
+      "statBoosts": { "spontaneity": 3, "creativity": 3 }
+    },
+    {
+      "id": "rnd_05",
+      "category": "random",
+      "comfort": "normal",
+      "difficulty": 2,
+      "baseXP": 90,
+      "emoji": "📺",
+      "title": "평소 안 보던 콘텐츠 끝까지 보기",
+      "description": "평소 관심 없던 장르의 영상이나 글을 하나 선택해서 끝까지 보세요.",
+      "statBoosts": { "adaptability": 4, "thinking": 3 }
+    }
+
+  ]
+}

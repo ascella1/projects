@@ -1,0 +1,97 @@
+{
+  "_comment": "흔한 목표 케이스에 대한 사용자 정의 퀘스트 템플릿. 목표 문자열에 keywords 중 하나라도 포함되면 이 카테고리가 매칭되어 AI 호출 없이 바로 퀘스트가 생성됩니다. 매칭되는 카테고리가 없으면 AI(Claude/Gemini/OpenAI)를 사용합니다. 배열 순서가 매칭 우선순위이며, 위에서부터 먼저 매칭됩니다. depth: 1=대목표, 2=중목표, 3=소목표, 4=일일 퀘스트. difficulty: easy/medium/hard. title 안의 {goal}은 사용자가 입력한 목표 원문으로 치환됩니다.",
+  "categories": [
+    {
+      "id": "health",
+      "name": "건강/다이어트",
+      "keywords": ["다이어트", "체중", "감량", "살", "운동", "헬스", "건강", "러닝"],
+      "stats": ["health"],
+      "quests": [
+        { "depth": 1, "title": "🏆 대목표: 건강하게 가벼워진 몸 가꾸기 ({goal})", "difficulty": "hard", "rewardExp": 100, "dueDays": 30 },
+        { "depth": 2, "title": "🥈 중목표: 하루 물 2L 채우기와 식습관 조절하기", "difficulty": "medium", "rewardExp": 50, "dueDays": 15 },
+        { "depth": 2, "title": "🥈 중목표: 규칙적인 활동량 유지 및 운동하기", "difficulty": "medium", "rewardExp": 50, "dueDays": 20 },
+        { "depth": 3, "title": "🥉 소목표: 매끼 채소 섭취 및 간식 멀리하기", "difficulty": "easy", "rewardExp": 30, "dueDays": 7 },
+        { "depth": 3, "title": "🥉 소목표: 저녁 식사 후 30분 유산소 운동하기", "difficulty": "easy", "rewardExp": 30, "dueDays": 10 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 아침 미온수 한 컵 마시기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 건강한 3식 기록 & 물 많이 마시기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 가벼운 홈트레이닝/산책으로 운동하기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 물 500ml 추가로 마시기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 5분 스트레칭으로 몸 풀기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 엘리베이터 대신 계단 이용하기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 야식 참고 일찍 잠자리에 들기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 앉은 자리에서 목/어깨 스트레칭 10회", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 하루 8000보 걷기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 튀김/과자 대신 견과류 간식 먹기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 }
+      ]
+    },
+    {
+      "id": "study",
+      "name": "공부/학습",
+      "keywords": ["공부", "학습", "시험", "영어", "책", "독서", "개발", "코딩", "플러터", "프로그래밍"],
+      "stats": ["knowledge", "career"],
+      "quests": [
+        { "depth": 1, "title": "🏆 대목표: 지식의 정원 무성하게 가꾸기 ({goal})", "difficulty": "hard", "rewardExp": 100, "dueDays": 30 },
+        { "depth": 2, "title": "🥈 중목표: 매일 깊이 몰입하는 자습 시간 확보", "difficulty": "medium", "rewardExp": 50, "dueDays": 15 },
+        { "depth": 2, "title": "🥈 중목표: 학습 내용 정리 및 실습 적용", "difficulty": "medium", "rewardExp": 50, "dueDays": 20 },
+        { "depth": 3, "title": "🥉 소목표: 이론 개념 하루 1챕터 정독하기", "difficulty": "easy", "rewardExp": 30, "dueDays": 7 },
+        { "depth": 3, "title": "🥉 소목표: 직접 작은 예제 구현 및 정리하기", "difficulty": "easy", "rewardExp": 30, "dueDays": 10 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 관련 도서/강의 1챕터 학습하기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 유용한 지식 정리/코드 작성하기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 오늘 공부한 내용 핵심 3줄 요약하기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 단어/개념 5개 암기하기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 25분 집중 타이머(뽀모도로) 1세트 돌리기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 어제 배운 내용 복습 10분", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 관련 아티클/블로그 1편 읽기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 오답노트/에러노트 1건 작성하기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 공부 시작 전 오늘의 학습 목표 적어보기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: SNS/유튜브 없이 순수 집중 30분 확보하기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 }
+      ]
+    },
+    {
+      "id": "money",
+      "name": "돈/재테크",
+      "keywords": ["돈", "주식", "저축", "적금", "부자", "억", "지출"],
+      "stats": ["money"],
+      "quests": [
+        { "depth": 1, "title": "🏆 대목표: 미래를 지탱할 단단한 자산 형성 ({goal})", "difficulty": "hard", "rewardExp": 100, "dueDays": 30 },
+        { "depth": 2, "title": "🥈 중목표: 불필요한 소비 통제 및 고정 지출 리서치", "difficulty": "medium", "rewardExp": 50, "dueDays": 15 },
+        { "depth": 2, "title": "🥈 중목표: 올바른 재테크 학습 및 투자 다변화", "difficulty": "medium", "rewardExp": 50, "dueDays": 20 },
+        { "depth": 3, "title": "🥉 소목표: 가계부 매일 기록 루틴 완벽 정착하기", "difficulty": "easy", "rewardExp": 30, "dueDays": 7 },
+        { "depth": 3, "title": "🥉 소목표: 주 1회 강제 무지출 데이 실천하기", "difficulty": "easy", "rewardExp": 30, "dueDays": 10 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 오늘 발생한 모든 지출 기록하기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 소비 전 \"이게 정말 필요한가?\" 3초 성찰하기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 금융/경제 헤드라인 3개 읽기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 커피/배달 대신 집밥 챙겨먹기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 오늘 사용한 구독 서비스 점검하기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 잔돈이라도 저금통에 저축하기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 중고거래 앱에서 안 쓰는 물건 1개 정리하기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 오늘 지출 목표 금액 미리 정해두기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 통장/카드 잔액 확인하기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 투자/재테크 뉴스레터 1편 읽기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 }
+      ]
+    },
+    {
+      "id": "social",
+      "name": "인간관계/소통",
+      "keywords": ["친구", "가족", "소통", "발표", "대화", "인간관계", "스피치"],
+      "stats": ["communication"],
+      "quests": [
+        { "depth": 1, "title": "🏆 대목표: 서로 따뜻하게 이해하는 소통 정원 ({goal})", "difficulty": "hard", "rewardExp": 100, "dueDays": 30 },
+        { "depth": 2, "title": "🥈 중목표: 타인의 목소리 경청 및 내 감정 다스리기", "difficulty": "medium", "rewardExp": 50, "dueDays": 15 },
+        { "depth": 2, "title": "🥈 중목표: 소중한 사람들과 지속적 교감 형성하기", "difficulty": "medium", "rewardExp": 50, "dueDays": 20 },
+        { "depth": 3, "title": "🥉 소목표: 주 1회 지인/가족에게 안부 연락하기", "difficulty": "easy", "rewardExp": 30, "dueDays": 7 },
+        { "depth": 3, "title": "🥉 소목표: 부정적 생각에 휩쓸리지 않도록 마음 정돈하기", "difficulty": "easy", "rewardExp": 30, "dueDays": 10 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 대화 시 상대방 눈을 다정히 마주하기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 오늘 고마웠던 사람에게 따뜻한 메시지 1통 보내기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 하루를 마무리하며 감사한 일 3가지 꼽아보기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 오늘 만난 사람에게 먼저 인사 건네기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 대화 중 상대방 말 끝까지 경청하기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 오늘 있었던 일 가족/친구와 나누기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 칭찬 한마디 건네기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 부정적인 말 대신 긍정적으로 표현해보기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: SNS 대신 직접 통화로 안부 묻기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 },
+        { "depth": 4, "title": "🌱 일일 퀘스트: 하루 5분 명상으로 마음 다스리기", "difficulty": "easy", "rewardExp": 10, "dueDays": 1 }
+      ]
+    }
+  ]
+}

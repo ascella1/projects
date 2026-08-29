@@ -1,0 +1,12 @@
+[
+  { "level": 3,  "title": "호기심 넘치는 탐험가" },
+  { "level": 5,  "title": "새벽빛 모험가" },
+  { "level": 7,  "title": "퀘스트의 길을 걷는 자" },
+  { "level": 10, "title": "경험 수집가" },
+  { "level": 15, "title": "용감한 도전자" },
+  { "level": 20, "title": "일상의 혁신가" },
+  { "level": 25, "title": "전설의 서막" },
+  { "level": 30, "title": "삶의 마스터" },
+  { "level": 40, "title": "불꽃 같은 탐험가" },
+  { "level": 50, "title": "전설 그 자체" }
+]

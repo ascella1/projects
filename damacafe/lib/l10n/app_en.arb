@@ -1,0 +1,71 @@
+{
+  "@@locale": "en",
+  "appTitle": "Pet Cafe",
+
+  "homeTitle": "🏠 My Home",
+  "cafeTitle": "☕ Cafe",
+  "shopTitle": "Shop",
+  "commuteResultTitle": "Today's Settlement",
+
+  "errorMessage": "Something went wrong: {error}",
+
+  "gaugeSatiationLabel": "Hunger (Fullness)",
+  "gaugeCleanlinessLabel": "Cleanliness",
+  "gaugeAffectionLabel": "Affection",
+
+  "clockInButton": "Go to work",
+  "clockOutButton": "Clock out",
+
+  "moodHappyReaction": "Having a great day!",
+  "moodMopingReaction": "Hmm... a little bored.",
+  "moodSulkingReaction": "Hmph, I'm upset.",
+  "moodLongingReaction": "I... missed you a lot.",
+
+  "feedReactionLiked": "Yum! The best 🐾",
+  "feedReactionNeutral": "Hmm, I'll just eat it.",
+  "feedReactionDisliked": "Ugh... I ate it anyway.",
+
+  "washButton": "Scrub and wash",
+
+  "playButton": "Play",
+  "playSuccessMessage": "Had so much fun! Affection up, coins earned 🎉",
+  "swipeMinigameTitle": "Swipe in the arrow direction!",
+  "stopPlayingButton": "Stop",
+
+  "sleepDayLabel": "Day",
+  "sleepNightLabel": "Night",
+
+  "ordersServedToday": "Orders served today: {count}",
+
+  "serveCompleteMessage": "{stars} Order served!",
+
+  "newRecipeHint": "First time making this! You'll need to play a minigame.",
+  "cookNowButton": "Cook now",
+  "cookWithMinigameButton": "Cook via minigame",
+
+  "npcOrderLabel": "{npcName}'s order",
+
+  "shopCategoryFood": "Food",
+  "shopCategoryToy": "Toy",
+  "shopCategoryBed": "Bed",
+
+  "careBonusLabel": "Care bonus +{value}",
+
+  "ownedLabel": "Owned",
+
+  "purchaseSuccessMessage": "Purchased {itemName}!",
+
+  "purchaseFailMessage": "Not enough coins.",
+
+  "priceCoinsLabel": "{price} coins",
+
+  "cookingScreenTitle": "Making {recipeName}",
+
+  "cookingInstructions": "Tap the screen when the marker is in the green zone!",
+
+  "settlementCoinsEarned": "Coins earned: {coins}",
+
+  "settlementConditionScore": "Condition score: {score}",
+
+  "backHomeButton": "Back home"
+}

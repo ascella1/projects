@@ -7,6 +7,7 @@ import 'user_provider.dart';
 import '../../../../core/services/claude_ai_service.dart';
 import '../../../../core/services/google_ai_service.dart';
 import '../../../../core/services/openai_service.dart';
+import '../../../../core/services/template_service.dart';
 import '../../../../core/config/api_config.dart';
 
 class QuestGenerationResult {
@@ -96,6 +97,20 @@ class QuestListNotifier
   }) async {
     state = const AsyncValue.loading();
     const goalId = 'g_active';
+
+    // 흔한 목표(mokpyo_templates.json 키워드 매칭)는 AI 호출 없이 바로 템플릿 퀘스트를 사용한다
+    try {
+      final templateMatch = await TemplateService.matchGoal(goal, goalId);
+      if (templateMatch != null) {
+        await _repository.createQuests(templateMatch.quests);
+        state = AsyncValue.data(templateMatch.quests);
+        return QuestGenerationResult(
+            stats: templateMatch.stats, quests: templateMatch.quests);
+      }
+    } catch (e) {
+      // 템플릿 파일 로드/파싱 실패 시에는 AI 생성 경로로 계속 진행한다
+      debugPrint('템플릿 매칭 실패, AI 생성으로 진행: $e');
+    }
 
     // 키워드 기반 능력치 추천 (AI 실패 시 Fallback)
     List<String> stats = ['career'];

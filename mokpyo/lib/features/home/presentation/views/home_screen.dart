@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../quest/domain/entities/quest_entity.dart';
 import '../../../quest/presentation/providers/quest_provider.dart';
 import '../../../quest/presentation/providers/user_provider.dart';
+import '../../../../core/services/item_service.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -32,27 +33,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   bool _isOpeningBox = false;
   late AnimationController _boxAnimController;
 
-  // 전체 악세사리 목록 (18개)
-  final List<Map<String, String>> _accessories = [
-    {'id': 'crown', 'name': '👑 전설의 왕관', 'desc': '모든 동물의 부러움을 삽니다.'},
-    {'id': 'sunglasses', 'name': '🕶️ 멋쟁이 선글라스', 'desc': '햇살 가득한 정원 필수품.'},
-    {'id': 'headset', 'name': '🎧 게이밍 헤드셋', 'desc': '비트를 느끼며 목표를 달성하세요.'},
-    {'id': 'scarf', 'name': '🧣 루돌프 목도리', 'desc': '정원의 겨울을 따뜻하게.'},
-    {'id': 'wizard_hat', 'name': '🎩 마술사 모자', 'desc': '신비한 기운이 솟아납니다.'},
-    {'id': 'ribbon', 'name': '🎀 핑크 리본', 'desc': '너무 사랑스러운 리본.'},
-    {'id': 'backpack', 'name': '🎒 모험가 가방', 'desc': '퀘스트 하러 갈 때 필수 가방.'},
-    {'id': 'clover', 'name': '🍀 행운의 네잎클로버', 'desc': '지니고만 있어도 대박 납니다.'},
-    {'id': 'graduation_cap', 'name': '🎓 졸업 모자', 'desc': '지식의 정점에 오른 증거.'},
-    {'id': 'sakura_crown', 'name': '🌸 벚꽃 화관', 'desc': '봄바람처럼 사랑받는 아이.'},
-    {'id': 'straw_hat', 'name': '👒 여름 밀짚모자', 'desc': '따사로운 햇살이 함께합니다.'},
-    {'id': 'cape', 'name': '🦸 슈퍼히어로 망토', 'desc': '오늘의 히어로는 바로 당신!'},
-    {'id': 'diamond', 'name': '💎 다이아 목걸이', 'desc': '빛나는 성과를 기념하세요.'},
-    {'id': 'mushroom', 'name': '🍄 버섯 모자', 'desc': '숲 속 정원의 요정 같아요.'},
-    {'id': 'star_wand', 'name': '⭐ 별빛 지팡이', 'desc': '소원을 이루어주는 마법봉.'},
-    {'id': 'beret', 'name': '🎨 아티스트 베레', 'desc': '삶을 예술로 만드는 당신.'},
-    {'id': 'monocle', 'name': '🧐 탐정 돋보기', 'desc': '목표를 날카롭게 분석합니다.'},
-    {'id': 'rocket', 'name': '🚀 우주 헬멧', 'desc': '별을 향해 쏘아 올려라!'},
-  ];
+  // 전체 악세사리 목록. assets/data/mokpyo_item.json 에서 로드된다.
+  List<Map<String, String>> _accessories = [];
 
   @override
   void initState() {
@@ -61,6 +43,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       vsync: this,
       duration: const Duration(milliseconds: 700),
     );
+    _loadAccessories();
+  }
+
+  Future<void> _loadAccessories() async {
+    final items = await ItemService.loadItems();
+    if (!mounted) return;
+    setState(() => _accessories = items);
   }
 
   @override
@@ -1058,7 +1047,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: (userState.boxesCount <= 0 || _isOpeningBox)
+              onPressed: (userState.boxesCount <= 0 ||
+                      _isOpeningBox ||
+                      _accessories.isEmpty)
                   ? null
                   : () async {
                       setState(() => _isOpeningBox = true);
@@ -1140,26 +1131,49 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           ),
         ),
         Expanded(
-          child: GridView.builder(
-            padding: const EdgeInsets.fromLTRB(14, 4, 14, 16),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              childAspectRatio: 0.82,
-            ),
-            itemCount: _accessories.length,
-            itemBuilder: (context, index) {
-              final item = _accessories[index];
-              final id = item['id']!;
-              final name = item['name']!;
-              final isOwned = userState.inventory.contains(id);
-              final isEquipped = userState.equippedAccessory == id;
+          child: userState.inventory.isEmpty
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(28.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text('🎒', style: TextStyle(fontSize: 48)),
+                        const SizedBox(height: 12),
+                        Text(
+                          '아직 획득한 아이템이 없어요.\n상자를 열어 악세사리를 모아보세요!',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey.withOpacity(0.9),
+                              height: 1.5),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : GridView.builder(
+                  padding: const EdgeInsets.fromLTRB(14, 4, 14, 16),
+                  gridDelegate:
+                      const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    childAspectRatio: 0.82,
+                  ),
+                  // 획득한 아이템만, 상자에서 얻은 순서대로 표시한다.
+                  itemCount: userState.inventory.length,
+                  itemBuilder: (context, index) {
+                    final id = userState.inventory[index];
+                    final item = _accessories.firstWhere(
+                        (e) => e['id'] == id,
+                        orElse: () => {});
+                    if (item.isEmpty) return const SizedBox();
+                    final name = item['name']!;
+                    final isEquipped = userState.equippedAccessory == id;
 
-              return GestureDetector(
-                onTap: !isOwned
-                    ? null
-                    : () {
+                    return GestureDetector(
+                      onTap: () {
                         if (isEquipped) {
                           ref
                               .read(userProvider.notifier)
@@ -1170,86 +1184,70 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                               .equipAccessory(id);
                         }
                       },
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  decoration: BoxDecoration(
-                    color: isOwned
-                        ? Colors.white
-                        : Colors.grey.withOpacity(0.07),
-                    borderRadius: BorderRadius.circular(18),
-                    border: Border.all(
-                      color: isEquipped
-                          ? const Color(0xFF2E7D32)
-                          : Colors.transparent,
-                      width: 2.5,
-                    ),
-                    boxShadow: isOwned
-                        ? [
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(
+                            color: isEquipped
+                                ? const Color(0xFF2E7D32)
+                                : Colors.transparent,
+                            width: 2.5,
+                          ),
+                          boxShadow: [
                             BoxShadow(
                                 color: Colors.black.withOpacity(0.04),
                                 blurRadius: 6)
-                          ]
-                        : [],
-                  ),
-                  child: Stack(
-                    children: [
-                      Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          ],
+                        ),
+                        child: Stack(
                           children: [
-                            Text(
-                              name.split(' ')[0],
-                              style: TextStyle(
-                                fontSize: 36,
-                                color: isOwned ? null : Colors.grey,
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    name.split(' ')[0],
+                                    style: const TextStyle(fontSize: 36),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    name.substring(name.indexOf(' ') + 1),
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF3E2723),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            const SizedBox(height: 6),
-                            Text(
-                              name.substring(name.indexOf(' ') + 1),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                color: isOwned
-                                    ? const Color(0xFF3E2723)
-                                    : Colors.grey,
+                            if (isEquipped)
+                              Positioned(
+                                top: 6,
+                                left: 6,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 5, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF2E7D32),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: const Text('장착',
+                                      style: TextStyle(
+                                          fontSize: 8,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold)),
+                                ),
                               ),
-                            ),
                           ],
                         ),
                       ),
-                      if (!isOwned)
-                        const Positioned(
-                          top: 8,
-                          right: 8,
-                          child: Icon(Icons.lock_outline,
-                              size: 14, color: Colors.grey),
-                        ),
-                      if (isEquipped)
-                        Positioned(
-                          top: 6,
-                          left: 6,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF2E7D32),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: const Text('장착',
-                                style: TextStyle(
-                                    fontSize: 8,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold)),
-                          ),
-                        ),
-                    ],
-                  ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
         ),
       ],
     );
@@ -1326,25 +1324,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF3E2723))),
                   const SizedBox(height: 14),
-                  _statRow('📚 지식',
-                      userState.statLevels['knowledge'] ?? 0,
-                      const Color(0xFF1E88E5)),
-                  const SizedBox(height: 10),
-                  _statRow('💼 커리어',
-                      userState.statLevels['career'] ?? 0,
-                      const Color(0xFF43A047)),
-                  const SizedBox(height: 10),
-                  _statRow('💪 체력',
-                      userState.statLevels['health'] ?? 0,
-                      const Color(0xFFE53935)),
-                  const SizedBox(height: 10),
-                  _statRow('💰 자산',
-                      userState.statLevels['money'] ?? 0,
-                      const Color(0xFFFFB300)),
-                  const SizedBox(height: 10),
-                  _statRow('💬 소통',
-                      userState.statLevels['communication'] ?? 0,
-                      const Color(0xFF8E24AA)),
+                  // 목표와 무관한 능력치는 숨기고, 현재 설정한 목표(들)와 연관된
+                  // 능력치만 표시한다. recommendedStats가 여러 개면(추후 유료 다중
+                  // 목표 지원 시) 그만큼 여러 행이 자연스럽게 표시된다.
+                  ...() {
+                    final statsToShow = userState.recommendedStats.isNotEmpty
+                        ? userState.recommendedStats
+                        : userState.statLevels.keys.toList();
+                    final rows = <Widget>[];
+                    for (var i = 0; i < statsToShow.length; i++) {
+                      final stat = statsToShow[i];
+                      final info = _statInfo(stat);
+                      if (i > 0) rows.add(const SizedBox(height: 10));
+                      rows.add(_statRow(
+                        '${info['emoji']} ${info['label']}',
+                        userState.statLevels[stat] ?? 0,
+                        info['color'] as Color,
+                      ));
+                    }
+                    return rows;
+                  }(),
                   const SizedBox(height: 8),
                   const Text(
                     '퀘스트 완료 시 해당 능력치 레벨이 1씩 오릅니다.',
