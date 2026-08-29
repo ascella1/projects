@@ -90,33 +90,75 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    final qc = context.qc;
+    final profile = state.userProfile;
+    final progress = profile?.levelProgress ?? 0.0;
+    final xpCurrent = profile?.xpInCurrentLevel ?? 0;
+    final xpNext = profile?.xpForNextLevel ?? 80;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'QUEST DAY',
-              style: TextStyle(
-                color: AppColors.primary,
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 3,
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'QUEST DAY',
+                  style: TextStyle(
+                    color: AppColors.primary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 3,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Hello, ${state.userProfile?.nickname ?? ''}',
+                  style: TextStyle(
+                    color: qc.textPrimary,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 4),
-            Text(
-              'Hello, ${state.userProfile?.nickname ?? ''}',
-              style: TextStyle(
-                color: context.qc.textPrimary,
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-              ),
+            Row(
+              children: [
+                _StreakBadge(streak: state.streak),
+                const SizedBox(width: 8),
+                _LevelBadge(level: state.level),
+              ],
             ),
           ],
         ),
-        _LevelBadge(level: state.level),
+        const SizedBox(height: 10),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: LinearProgressIndicator(
+            value: progress,
+            backgroundColor: qc.divider,
+            valueColor: const AlwaysStoppedAnimation(AppColors.accent),
+            minHeight: 5,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '$xpCurrent XP',
+              style: TextStyle(color: qc.textMuted, fontSize: 10),
+            ),
+            Text(
+              'NEXT LV: $xpNext XP',
+              style: const TextStyle(
+                  color: AppColors.accent, fontSize: 10, fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -227,10 +269,10 @@ class _QuestCard extends StatelessWidget {
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: qc.card,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isCompleted
               ? AppColors.safe.withValues(alpha: 0.5)
@@ -239,16 +281,16 @@ class _QuestCard extends StatelessWidget {
         ),
         boxShadow: qc.isDark
             ? null
-            : [BoxShadow(color: _catColor.withValues(alpha: 0.08), blurRadius: 12, offset: const Offset(0, 4))],
+            : [BoxShadow(color: _catColor.withValues(alpha: 0.08), blurRadius: 8, offset: const Offset(0, 3))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
+            padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
             decoration: BoxDecoration(
               color: _catColor.withValues(alpha: 0.1),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             ),
             child: Row(
               children: [
@@ -257,20 +299,20 @@ class _QuestCard extends StatelessWidget {
                 _Badge(label: quest.comfortLevelName, color: _comfortColor),
                 const Spacer(),
                 Text(quest.difficultyStars,
-                    style: const TextStyle(color: AppColors.accent, fontSize: 13, letterSpacing: 1)),
+                    style: const TextStyle(color: AppColors.accent, fontSize: 12, letterSpacing: 1)),
               ],
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(quest.emoji, style: const TextStyle(fontSize: 32)),
-                    const SizedBox(width: 12),
+                    Text(quest.emoji, style: const TextStyle(fontSize: 26)),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -279,35 +321,35 @@ class _QuestCard extends StatelessWidget {
                             quest.title,
                             style: TextStyle(
                               color: qc.textPrimary,
-                              fontSize: 17,
+                              fontSize: 15,
                               fontWeight: FontWeight.w800,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 3),
                           Text(
                             quest.description,
-                            maxLines: 3,
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(color: qc.textSecondary, fontSize: 13, height: 1.5),
+                            style: TextStyle(color: qc.textSecondary, fontSize: 12, height: 1.4),
                           ),
                         ],
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 8),
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: AppColors.accent.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(7),
                       ),
                       child: Text(
                         '+${quest.baseXP} XP',
                         style: const TextStyle(
-                            color: AppColors.accent, fontSize: 12, fontWeight: FontWeight.w700),
+                            color: AppColors.accent, fontSize: 11, fontWeight: FontWeight.w700),
                       ),
                     ),
                     const Spacer(),
@@ -672,10 +714,11 @@ class _SpecialMissionCardState extends State<_SpecialMissionCard>
   }
 
   Future<void> _onClaimTap(BuildContext context, AppState state, mission) async {
+    final navigator = Navigator.of(context);
+    final scaffold = ScaffoldMessenger.of(context);
     try {
       final result = await state.claimSpecialMission();
-      if (!context.mounted) return;
-      await Navigator.of(context).push(
+      await navigator.push(
         PageRouteBuilder(
           pageBuilder: (ctx, anim, _) =>
               SpecialCompleteScreen(result: result, mission: mission),
@@ -684,10 +727,7 @@ class _SpecialMissionCardState extends State<_SpecialMissionCard>
         ),
       );
     } catch (e) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('오류: $e')),
-      );
+      scaffold.showSnackBar(SnackBar(content: Text('오류: $e')));
     }
   }
 }
@@ -717,11 +757,13 @@ class _CompleteButton extends StatelessWidget {
   }
 
   Future<void> _onTap(BuildContext context) async {
+    // Capture before any await — _CompleteButton unmounts when quest completes
+    final navigator = Navigator.of(context);
+    final scaffold = ScaffoldMessenger.of(context);
     try {
       final result = await context.read<AppState>().completeQuest(questId);
-      if (!context.mounted) return;
 
-      await Navigator.of(context).push(
+      await navigator.push(
         PageRouteBuilder(
           pageBuilder: (ctx, anim, _) => QuestCompleteScreen(entry: result.entry),
           transitionsBuilder: (ctx, anim, _, child) =>
@@ -729,10 +771,8 @@ class _CompleteButton extends StatelessWidget {
         ),
       );
 
-      if (!context.mounted) return;
-
       if (result.didLevelUp) {
-        await Navigator.of(context).push(
+        await navigator.push(
           PageRouteBuilder(
             pageBuilder: (ctx, anim, _) =>
                 LevelUpScreen(newLevel: result.newLevel, newTitle: result.newTitle),
@@ -742,9 +782,7 @@ class _CompleteButton extends StatelessWidget {
         );
       }
     } catch (e) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('오류가 발생했습니다: $e')));
+      scaffold.showSnackBar(SnackBar(content: Text('오류가 발생했습니다: $e')));
     }
   }
 }
@@ -832,84 +870,69 @@ class _BottomInfo extends StatelessWidget {
     final completed = state.todayCompletedIds.length;
     final total = state.todayQuests.length;
 
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(color: qc.card, borderRadius: BorderRadius.circular(16)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(color: qc.card, borderRadius: BorderRadius.circular(16)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '오늘의 진행도',
-                    style: TextStyle(
-                        color: qc.textSecondary, fontSize: 12, fontWeight: FontWeight.w600),
-                  ),
-                  Text(
-                    '$completed / $total',
-                    style: const TextStyle(
-                        color: AppColors.accent, fontSize: 13, fontWeight: FontWeight.w800),
-                  ),
-                ],
+              Text(
+                '오늘의 진행도',
+                style: TextStyle(
+                    color: qc.textSecondary, fontSize: 12, fontWeight: FontWeight.w600),
               ),
-              const SizedBox(height: 10),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: LinearProgressIndicator(
-                  value: total > 0 ? completed / total : 0,
-                  backgroundColor: qc.divider,
-                  valueColor: const AlwaysStoppedAnimation(AppColors.accent),
-                  minHeight: 6,
-                ),
+              Text(
+                '$completed / $total',
+                style: const TextStyle(
+                    color: AppColors.accent, fontSize: 13, fontWeight: FontWeight.w800),
               ),
             ],
           ),
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(child: _InfoTile(label: 'STREAK', value: '${state.streak}일', icon: '🔥')),
-            const SizedBox(width: 12),
-            Expanded(child: _InfoTile(label: 'LEVEL', value: '${state.level}', icon: '⭐')),
-            const SizedBox(width: 12),
-            Expanded(
-                child: _InfoTile(label: '경험 수', value: '${state.experiences.length}개', icon: '📚')),
-          ],
-        ),
-      ],
+          const SizedBox(height: 10),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: total > 0 ? completed / total : 0,
+              backgroundColor: qc.divider,
+              valueColor: const AlwaysStoppedAnimation(AppColors.accent),
+              minHeight: 6,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _InfoTile extends StatelessWidget {
-  final String label;
-  final String value;
-  final String icon;
-  const _InfoTile({required this.label, required this.value, required this.icon});
+class _StreakBadge extends StatelessWidget {
+  final int streak;
+  const _StreakBadge({required this.streak});
 
   @override
   Widget build(BuildContext context) {
-    final qc = context.qc;
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
-      decoration: BoxDecoration(color: qc.card, borderRadius: BorderRadius.circular(14)),
-      child: Column(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF3E0),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFFF9800).withValues(alpha: 0.4)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Text(icon, style: const TextStyle(fontSize: 18)),
-          const SizedBox(height: 5),
-          Text(value,
-              style: TextStyle(
-                  color: qc.textPrimary, fontSize: 15, fontWeight: FontWeight.w800)),
-          const SizedBox(height: 2),
-          Text(label,
-              style: TextStyle(
-                  color: qc.textMuted,
-                  fontSize: 9,
-                  letterSpacing: 0.8,
-                  fontWeight: FontWeight.w600)),
+          const Text('🔥', style: TextStyle(fontSize: 13)),
+          const SizedBox(width: 4),
+          Text(
+            '$streak일',
+            style: const TextStyle(
+              color: Color(0xFFE65100),
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
         ],
       ),
     );
