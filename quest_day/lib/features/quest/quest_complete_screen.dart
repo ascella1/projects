@@ -212,16 +212,16 @@ class _StatChip extends StatelessWidget {
 
   String get _label {
     switch (stat) {
-      case 'exploration': return 'EXPLORATION';
-      case 'social': return 'SOCIAL';
-      case 'courage': return 'COURAGE';
-      case 'creativity': return 'CREATIVITY';
-      case 'spontaneity': return 'SPONTANEITY';
-      case 'adaptability': return 'ADAPTABILITY';
-      case 'action': return 'ACTION';
-      case 'thinking': return 'THINKING';
-      case 'relationship': return 'RELATIONSHIP';
-      default: return stat.toUpperCase();
+      case 'exploration': return '탐험';
+      case 'social': return '사교';
+      case 'courage': return '용기';
+      case 'creativity': return '창의';
+      case 'spontaneity': return '즉흥';
+      case 'adaptability': return '적응력';
+      case 'action': return '행동력';
+      case 'thinking': return '사고력';
+      case 'relationship': return '관계';
+      default: return stat;
     }
   }
 

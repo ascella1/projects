@@ -10,6 +10,7 @@ class StorageService {
   static const _keyStats = 'character_stats';
   static const _keyThemeMode = 'theme_mode';
   static const _keyDeviceId  = 'device_id';
+  static const _keySpecialSlotCompleted = 'special_slot_completed';
 
   late SharedPreferences _prefs;
 
@@ -66,6 +67,11 @@ class StorageService {
   // Device ID (익명 유저 식별용)
   String? getDeviceId() => _prefs.getString(_keyDeviceId);
   Future<void> saveDeviceId(String id) => _prefs.setString(_keyDeviceId, id);
+
+  // Special Mission — 4시간 슬롯 완료 키 (예: "2024-08-30-slot-2")
+  String? getCompletedSpecialSlot() => _prefs.getString(_keySpecialSlotCompleted);
+  Future<void> saveCompletedSpecialSlot(String slotKey) =>
+      _prefs.setString(_keySpecialSlotCompleted, slotKey);
 
   Future<void> clear() => _prefs.clear();
 }

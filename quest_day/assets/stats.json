@@ -1,8 +1,8 @@
 [
-  { "key": "exploration",  "label": "EXPLORATION",  "icon": "🗺️", "color": "#06B6D4" },
-  { "key": "social",       "label": "SOCIAL",       "icon": "🤝", "color": "#F97316" },
-  { "key": "courage",      "label": "COURAGE",      "icon": "⚔️", "color": "#F59E0B" },
-  { "key": "creativity",   "label": "CREATIVITY",   "icon": "🎨", "color": "#EC4899" },
-  { "key": "spontaneity",  "label": "SPONTANEITY",  "icon": "⚡", "color": "#FFD700" },
-  { "key": "adaptability", "label": "ADAPTABILITY", "icon": "🌊", "color": "#8B5CF6" }
+  { "key": "exploration",  "label": "탐험",   "icon": "🗺️", "color": "#06B6D4" },
+  { "key": "social",       "label": "사교",   "icon": "🤝", "color": "#F97316" },
+  { "key": "courage",      "label": "용기",   "icon": "⚔️", "color": "#F59E0B" },
+  { "key": "creativity",   "label": "창의",   "icon": "🎨", "color": "#EC4899" },
+  { "key": "spontaneity",  "label": "즉흥",   "icon": "⚡", "color": "#FFD700" },
+  { "key": "adaptability", "label": "적응력", "icon": "🌊", "color": "#8B5CF6" }
 ]

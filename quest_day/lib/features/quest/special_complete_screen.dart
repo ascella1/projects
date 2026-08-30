@@ -32,12 +32,10 @@ class _SpecialCompleteScreenState extends State<SpecialCompleteScreen>
   final _rng = Random();
   late List<_Confetti> _confetti;
 
-  bool get _isWinner => widget.result.isWinner;
-
   @override
   void initState() {
     super.initState();
-    _confetti = List.generate(_isWinner ? 90 : 0, (_) => _Confetti(_rng));
+    _confetti = List.generate(90, (_) => _Confetti(_rng));
 
     _main = AnimationController(vsync: this, duration: const Duration(milliseconds: 2000));
     _confettiCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 3500));
@@ -66,7 +64,7 @@ class _SpecialCompleteScreenState extends State<SpecialCompleteScreen>
 
     HapticFeedback.heavyImpact();
     _main.forward();
-    if (_isWinner) _confettiCtrl.forward();
+    _confettiCtrl.forward();
   }
 
   @override
@@ -85,23 +83,21 @@ class _SpecialCompleteScreenState extends State<SpecialCompleteScreen>
       backgroundColor: qc.background,
       body: Stack(
         children: [
-          // 컨페티 (승리 시만)
-          if (_isWinner)
-            AnimatedBuilder(
-              animation: _confettiCtrl,
-              builder: (ctx, child) => CustomPaint(
-                size: size,
-                painter: _ConfettiPainter(_confetti, _confettiCtrl.value * 3.5),
-              ),
+          // 컨페티
+          AnimatedBuilder(
+            animation: _confettiCtrl,
+            builder: (ctx, child) => CustomPaint(
+              size: size,
+              painter: _ConfettiPainter(_confetti, _confettiCtrl.value * 3.5),
             ),
+          ),
 
-          // 골든 플래시
+          // 플래시
           AnimatedBuilder(
             animation: _flash,
             builder: (ctx, child) => IgnorePointer(
               child: Container(
-                color: (_isWinner ? const Color(0xFFFBBF24) : Colors.white)
-                    .withValues(alpha: _flash.value),
+                color: const Color(0xFFFBBF24).withValues(alpha: _flash.value),
               ),
             ),
           ),
@@ -113,60 +109,37 @@ class _SpecialCompleteScreenState extends State<SpecialCompleteScreen>
                 children: [
                   const SizedBox(height: 70),
 
-                  // 이모지 + 타이틀
                   FadeTransition(
                     opacity: _fadeAnim,
                     child: ScaleTransition(
                       scale: _scaleAnim,
                       child: Column(
                         children: [
-                          Text(
-                            _isWinner ? '🏆' : '😢',
-                            style: const TextStyle(fontSize: 72),
-                          ),
+                          const Text('⚡', style: TextStyle(fontSize: 72)),
                           const SizedBox(height: 20),
-                          if (_isWinner) ...[
-                            ShaderMask(
-                              shaderCallback: (b) => const LinearGradient(
-                                colors: [Color(0xFFF59E0B), Color(0xFFFBBF24)],
-                              ).createShader(b),
-                              child: const Text(
-                                '전국 최초 완료!',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 36,
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: 1,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              '「${widget.mission.title}」',
+                          ShaderMask(
+                            shaderCallback: (b) => const LinearGradient(
+                              colors: [Color(0xFFF59E0B), Color(0xFFFBBF24)],
+                            ).createShader(b),
+                            child: const Text(
+                              '스페셜 완료!',
                               style: TextStyle(
-                                color: qc.textSecondary,
-                                fontSize: 16,
-                                height: 1.5,
+                                color: Colors.white,
+                                fontSize: 36,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1,
                               ),
                             ),
-                          ] else ...[
-                            Text(
-                              '아쉽게도 누군가 먼저 했어요',
-                              style: TextStyle(
-                                color: qc.textPrimary,
-                                fontSize: 24,
-                                fontWeight: FontWeight.w800,
-                              ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            '「${widget.mission.title}」',
+                            style: TextStyle(
+                              color: qc.textSecondary,
+                              fontSize: 16,
+                              height: 1.5,
                             ),
-                            const SizedBox(height: 12),
-                            Text(
-                              '「${widget.mission.title}」',
-                              style: TextStyle(
-                                color: qc.textSecondary,
-                                fontSize: 15,
-                              ),
-                            ),
-                          ],
+                          ),
                         ],
                       ),
                     ),
@@ -174,17 +147,24 @@ class _SpecialCompleteScreenState extends State<SpecialCompleteScreen>
 
                   const SizedBox(height: 36),
 
-                  // XP 카드 (승리) / 위너 카드 (패배)
                   FadeTransition(
                     opacity: _xpAnim,
-                    child: _isWinner
-                        ? _WinnerXPCard(xp: widget.result.xpEarned)
-                        : _LoserCard(winner: widget.result.winner),
+                    child: _XPCard(xp: widget.result.xpEarned),
                   ),
+
+                  if (widget.result.didLevelUp) ...[
+                    const SizedBox(height: 16),
+                    FadeTransition(
+                      opacity: _xpAnim,
+                      child: _LevelUpBadge(
+                        level: widget.result.newLevel,
+                        title: widget.result.newTitle,
+                      ),
+                    ),
+                  ],
 
                   const Spacer(),
 
-                  // 버튼
                   FadeTransition(
                     opacity: _bottomAnim,
                     child: SizedBox(
@@ -196,7 +176,7 @@ class _SpecialCompleteScreenState extends State<SpecialCompleteScreen>
                           Navigator.of(context).pop();
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: _isWinner ? AppColors.accent : AppColors.primary,
+                          backgroundColor: AppColors.accent,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
@@ -207,7 +187,7 @@ class _SpecialCompleteScreenState extends State<SpecialCompleteScreen>
                             letterSpacing: 1,
                           ),
                         ),
-                        child: Text(_isWinner ? '영광스럽다!' : '내일 더 빨리!'),
+                        child: const Text('최고야!'),
                       ),
                     ),
                   ),
@@ -222,11 +202,11 @@ class _SpecialCompleteScreenState extends State<SpecialCompleteScreen>
   }
 }
 
-// ─── 승리 XP 카드 ─────────────────────────────────────────────────────────────
+// ─── XP 카드 ──────────────────────────────────────────────────────────────────
 
-class _WinnerXPCard extends StatelessWidget {
+class _XPCard extends StatelessWidget {
   final int xp;
-  const _WinnerXPCard({required this.xp});
+  const _XPCard({required this.xp});
 
   @override
   Widget build(BuildContext context) {
@@ -261,7 +241,7 @@ class _WinnerXPCard extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             '스페셜 미션 보너스',
-            style: TextStyle(color: context.qc.textMuted, fontSize: 13),
+            style: TextStyle(color: qc.textMuted, fontSize: 13),
           ),
         ],
       ),
@@ -269,48 +249,45 @@ class _WinnerXPCard extends StatelessWidget {
   }
 }
 
-// ─── 패배 — 위너 정보 카드 ───────────────────────────────────────────────────
+// ─── 레벨업 뱃지 ──────────────────────────────────────────────────────────────
 
-class _LoserCard extends StatelessWidget {
-  final SpecialMissionClaim winner;
-  const _LoserCard({required this.winner});
+class _LevelUpBadge extends StatelessWidget {
+  final int level;
+  final String? title;
+  const _LevelUpBadge({required this.level, this.title});
 
   @override
   Widget build(BuildContext context) {
     final qc = context.qc;
-    final timeStr =
-        '${winner.claimedAt.hour.toString().padLeft(2, '0')}:${winner.claimedAt.minute.toString().padLeft(2, '0')}';
-
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
       decoration: BoxDecoration(
-        color: qc.card,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: qc.divider),
+        color: AppColors.primary.withValues(alpha: qc.isDark ? 0.15 : 0.08),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.4)),
       ),
-      child: Column(
+      child: Row(
         children: [
-          const Text('👑', style: TextStyle(fontSize: 32)),
-          const SizedBox(height: 12),
-          Text(
-            winner.claimerNickname,
-            style: TextStyle(
-              color: qc.textPrimary,
-              fontSize: 22,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            '오늘 $timeStr에 완료했어요',
-            style: TextStyle(color: qc.textSecondary, fontSize: 14),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            '내일 자정에 새 스페셜 미션이 열려요.\n더 빨리 도전하세요! 💪',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: qc.textMuted, fontSize: 13, height: 1.6),
+          const Text('🎉', style: TextStyle(fontSize: 22)),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Level $level 달성!',
+                style: TextStyle(
+                  color: qc.textPrimary,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              if (title != null)
+                Text(
+                  title!,
+                  style: TextStyle(color: qc.textMuted, fontSize: 12),
+                ),
+            ],
           ),
         ],
       ),
@@ -318,7 +295,7 @@ class _LoserCard extends StatelessWidget {
   }
 }
 
-// ─── 컨페티 (승리 시) ─────────────────────────────────────────────────────────
+// ─── 컨페티 ───────────────────────────────────────────────────────────────────
 
 const _confettiColors = [
   Color(0xFFF59E0B), Color(0xFF7C3AED), Color(0xFFEC4899),

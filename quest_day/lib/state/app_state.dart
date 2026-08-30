@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -13,12 +12,9 @@ import '../core/services/quest_service.dart';
 import '../core/services/quest_database.dart';
 import '../core/services/level_titles.dart';
 import '../core/services/stat_config.dart';
-import '../core/services/supabase_service.dart';
-import '../core/config/supabase_config.dart';
 
 class AppState extends ChangeNotifier {
   final StorageService _storage;
-  final _supabase = SupabaseService();
 
   AppState(this._storage);
 
@@ -38,13 +34,12 @@ class AppState extends ChangeNotifier {
     'adaptability': 0,
   };
 
-  // 스페셜 미션
+  // 스페셜 미션 — 4시간 슬롯 기반
   List<SpecialMission> _specialMissionPool = [];
   SpecialMission? _todaySpecialMission;
-  SpecialMissionClaim? _specialClaim;   // null = 아직 아무도 안 함
+  bool _specialCompletedThisSlot = false;
   bool _specialLoading = false;
   String? _specialError;
-  String? _deviceId;
 
   // Getters
   bool get isLoading => _isLoading;
@@ -67,12 +62,9 @@ class AppState extends ChangeNotifier {
 
   // 스페셜 미션 Getters
   SpecialMission? get todaySpecialMission => _todaySpecialMission;
-  SpecialMissionClaim? get specialClaim => _specialClaim;
+  bool get specialCompletedThisSlot => _specialCompletedThisSlot;
   bool get specialLoading => _specialLoading;
   String? get specialError => _specialError;
-  String? get deviceId => _deviceId;
-  bool get specialClaimedByMe =>
-      _specialClaim != null && _deviceId != null && _specialClaim!.isMe(_deviceId!);
 
   // ─── 초기화 ───────────────────────────────────────────────────────────────
 
@@ -88,7 +80,6 @@ class AppState extends ChangeNotifier {
 
     _themeMode = _storage.getThemeMode() == 'light' ? ThemeMode.light : ThemeMode.dark;
     _isOnboarded = _storage.isOnboarded;
-    _deviceId = await _ensureDeviceId();
 
     // 스페셜 미션 풀 로드 (로컬 JSON)
     await _loadSpecialMissionPool();
@@ -116,11 +107,11 @@ class AppState extends ChangeNotifier {
     _isLoading = false;
     notifyListeners();
 
-    // 스페셜 미션 클레임 상태는 백그라운드에서 비동기 로드
-    if (_isOnboarded) _fetchSpecialMissionClaim();
+    // 스페셜 미션 슬롯 완료 여부 확인 (로컬)
+    if (_isOnboarded) _checkSpecialSlotCompletion();
   }
 
-  // ─── 스페셜 미션 ──────────────────────────────────────────────────────────
+  // ─── 스페셜 미션 (4시간 슬롯 기반) ──────────────────────────────────────────
 
   Future<void> _loadSpecialMissionPool() async {
     try {
@@ -128,87 +119,69 @@ class AppState extends ChangeNotifier {
       final list = jsonDecode(raw) as List;
       _specialMissionPool =
           list.map((e) => SpecialMission.fromJson(e as Map<String, dynamic>)).toList();
-      _todaySpecialMission = _pickTodayMission();
+      _todaySpecialMission = _pickCurrentMission();
     } catch (_) {
       // JSON 로드 실패 시 스페셜 미션 없음
     }
   }
 
-  SpecialMission? _pickTodayMission() {
+  // 오늘 날짜 기반 미션 선택 (24시간 로테이션)
+  SpecialMission? _pickCurrentMission() {
     if (_specialMissionPool.isEmpty) return null;
     final epoch = DateTime(2024, 1, 1);
-    final dayIndex = DateTime.now().difference(epoch).inDays;
-    return _specialMissionPool[dayIndex % _specialMissionPool.length];
+    final totalDays = DateTime.now().difference(epoch).inDays;
+    return _specialMissionPool[totalDays % _specialMissionPool.length];
   }
 
-  Future<void> _fetchSpecialMissionClaim() async {
-    if (_todaySpecialMission == null) return;
-    if (!SupabaseConfig.isConfigured) return;
+  // 스페셜 미션 키: 하루 단위
+  static String _currentSlotKey() => DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-    _specialLoading = true;
-    _specialError = null;
+  // 기본 퀘스트 슬롯 키: 4시간 단위 (예: "2024-08-30-slot-2")
+  static String _currentQuestSlotKey() {
+    final now = DateTime.now();
+    final slotIndex = now.hour ~/ 4;
+    return '${DateFormat('yyyy-MM-dd').format(now)}-slot-$slotIndex';
+  }
+
+  void _checkSpecialSlotCompletion() {
+    final completedSlot = _storage.getCompletedSpecialSlot();
+    _specialCompletedThisSlot = completedSlot == _currentSlotKey();
     notifyListeners();
-
-    try {
-      _specialClaim = await _supabase.fetchTodayClaim(_todayDateString());
-    } catch (e) {
-      _specialError = '네트워크 오류. 다시 시도해주세요.';
-    } finally {
-      _specialLoading = false;
-      notifyListeners();
-    }
   }
 
-  Future<void> refreshSpecialMission() => _fetchSpecialMissionClaim();
+  // 슬롯이 바뀌었을 때 UI에서 호출
+  void refreshSpecialMission() {
+    _todaySpecialMission = _pickCurrentMission();
+    _checkSpecialSlotCompletion();
+  }
 
   Future<SpecialClaimResult> claimSpecialMission() async {
     if (_todaySpecialMission == null) throw StateError('No special mission');
     if (_userProfile == null) throw StateError('No user profile');
-    if (_deviceId == null) throw StateError('No device ID');
 
     _specialLoading = true;
     notifyListeners();
 
     try {
-      final result = await _supabase.claimMission(
-        date: _todayDateString(),
-        nickname: _userProfile!.nickname,
-        deviceId: _deviceId!,
+      final xpEarned = _todaySpecialMission!.bonusXp;
+      final oldLevel = _userProfile!.level;
+      final newTotalXP = _userProfile!.totalXP + xpEarned;
+      final newLevel = _computeLevel(newTotalXP);
+      final didLevelUp = newLevel > oldLevel;
+      final newTitle = didLevelUp ? LevelTitles.unlockedAt(newLevel) : null;
+
+      _userProfile = _userProfile!.copyWith(totalXP: newTotalXP, level: newLevel);
+      await _storage.saveUserProfile(_userProfile!.toJsonString());
+      await _storage.saveCompletedSpecialSlot(_currentSlotKey());
+      _specialCompletedThisSlot = true;
+
+      notifyListeners();
+      return SpecialClaimResult(
+        xpEarned: xpEarned,
+        didLevelUp: didLevelUp,
+        newLevel: newLevel,
+        newTitle: newTitle,
       );
-
-      _specialClaim = result.existingClaim;
-
-      if (result.isWinner) {
-        // XP 지급
-        final xpEarned = _todaySpecialMission!.bonusXp;
-        final oldLevel = _userProfile!.level;
-        final newTotalXP = _userProfile!.totalXP + xpEarned;
-        final newLevel = _computeLevel(newTotalXP);
-        final didLevelUp = newLevel > oldLevel;
-        final newTitle = didLevelUp ? LevelTitles.unlockedAt(newLevel) : null;
-
-        _userProfile = _userProfile!.copyWith(totalXP: newTotalXP, level: newLevel);
-        await _storage.saveUserProfile(_userProfile!.toJsonString());
-
-        notifyListeners();
-        return SpecialClaimResult(
-          isWinner: true,
-          winner: result.existingClaim!,
-          xpEarned: xpEarned,
-          didLevelUp: didLevelUp,
-          newLevel: newLevel,
-          newTitle: newTitle,
-        );
-      } else {
-        notifyListeners();
-        return SpecialClaimResult(
-          isWinner: false,
-          winner: result.existingClaim!,
-          xpEarned: 0,
-          didLevelUp: false,
-          newLevel: _userProfile!.level,
-        );
-      }
     } catch (e) {
       _specialError = '오류가 발생했어요. 다시 시도해주세요.';
       notifyListeners();
@@ -222,11 +195,11 @@ class AppState extends ChangeNotifier {
   // ─── 일반 퀘스트 ──────────────────────────────────────────────────────────
 
   Future<void> _loadOrRefreshTodayQuests() async {
-    final today = _todayDateString();
+    final slotKey = _currentQuestSlotKey();
     final savedDate = _storage.getTodayQuestDate();
     final savedIds = _storage.getTodayQuestIds();
 
-    if (savedDate == today && savedIds.isNotEmpty) {
+    if (savedDate == slotKey && savedIds.isNotEmpty) {
       _todayQuests = savedIds
           .map((id) => QuestDatabase.findById(id))
           .whereType<Quest>()
@@ -250,7 +223,7 @@ class AppState extends ChangeNotifier {
     _todayCompletedIds = {};
     await _storage.saveTodayQuests(
       quests.map((q) => q.id).toList(),
-      _todayDateString(),
+      _currentQuestSlotKey(),
     );
   }
 
@@ -261,7 +234,7 @@ class AppState extends ChangeNotifier {
     await _assignNewTodayQuests();
     _isLoading = false;
     notifyListeners();
-    _fetchSpecialMissionClaim();
+    _checkSpecialSlotCompletion();
   }
 
   Future<QuestResult> completeQuest(String questId) async {
@@ -368,7 +341,7 @@ class AppState extends ChangeNotifier {
     _todayQuests = [];
     _todayCompletedIds = {};
     _experiences = [];
-    _specialClaim = null;
+    _specialCompletedThisSlot = false;
     _specialError = null;
     _stats = {
       'exploration': 0,
@@ -382,27 +355,6 @@ class AppState extends ChangeNotifier {
   }
 
   // ─── 헬퍼 ─────────────────────────────────────────────────────────────────
-
-  Future<String> _ensureDeviceId() async {
-    final existing = _storage.getDeviceId();
-    if (existing != null) return existing;
-    final newId = _generateUuid();
-    await _storage.saveDeviceId(newId);
-    return newId;
-  }
-
-  static String _generateUuid() {
-    final rng = Random.secure();
-    final bytes = List.generate(16, (_) => rng.nextInt(256));
-    bytes[6] = (bytes[6] & 0x0f) | 0x40;
-    bytes[8] = (bytes[8] & 0x3f) | 0x80;
-    String hex(int b) => b.toRadixString(16).padLeft(2, '0');
-    return '${bytes.sublist(0, 4).map(hex).join()}-'
-        '${bytes.sublist(4, 6).map(hex).join()}-'
-        '${bytes.sublist(6, 8).map(hex).join()}-'
-        '${bytes.sublist(8, 10).map(hex).join()}-'
-        '${bytes.sublist(10).map(hex).join()}';
-  }
 
   static int _computeLevel(int totalXP) => UserProfile.computeLevel(totalXP);
 

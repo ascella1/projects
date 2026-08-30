@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/models/quest.dart';
-import '../../core/config/supabase_config.dart';
 import '../../state/app_state.dart';
 import '../quest/quest_complete_screen.dart';
 import '../quest/level_up_screen.dart';
@@ -225,7 +224,7 @@ class _SpecialSectionTitle extends StatelessWidget {
             borderRadius: BorderRadius.circular(6),
           ),
           child: const Text(
-            '선착순 1명',
+            '4시간 갱신',
             style: TextStyle(color: AppColors.accent, fontSize: 10, fontWeight: FontWeight.w800),
           ),
         ),
@@ -236,12 +235,20 @@ class _SpecialSectionTitle extends StatelessWidget {
 
 // ─── 일반 퀘스트 카드 ─────────────────────────────────────────────────────────
 
-class _QuestCard extends StatelessWidget {
+class _QuestCard extends StatefulWidget {
   final Quest quest;
   const _QuestCard({required this.quest});
 
+  @override
+  State<_QuestCard> createState() => _QuestCardState();
+}
+
+class _QuestCardState extends State<_QuestCard> {
+  Timer? _timer;
+  Duration _remaining = Duration.zero;
+
   Color get _catColor {
-    switch (quest.category) {
+    switch (widget.quest.category) {
       case QuestCategory.exploration: return AppColors.exploration;
       case QuestCategory.social: return AppColors.social;
       case QuestCategory.creative: return AppColors.creative;
@@ -253,7 +260,7 @@ class _QuestCard extends StatelessWidget {
   }
 
   Color get _comfortColor {
-    switch (quest.comfortLevel) {
+    switch (widget.quest.comfortLevel) {
       case ComfortLevel.safe: return AppColors.safe;
       case ComfortLevel.normal: return AppColors.normal;
       case ComfortLevel.challenge: return AppColors.challenge;
@@ -262,10 +269,47 @@ class _QuestCard extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _updateRemaining();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted) return;
+      final prev = _remaining.inSeconds;
+      setState(_updateRemaining);
+      // 슬롯이 바뀌면 퀘스트 새로고침
+      if (prev <= 1 && _remaining.inSeconds > 0) {
+        context.read<AppState>().refreshQuests();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _updateRemaining() {
+    final now = DateTime.now();
+    final nextSlotHour = ((now.hour ~/ 4) + 1) * 4;
+    final nextSlot = nextSlotHour >= 24
+        ? DateTime(now.year, now.month, now.day + 1)
+        : DateTime(now.year, now.month, now.day, nextSlotHour);
+    _remaining = nextSlot.difference(now);
+  }
+
+  String get _countdownText {
+    final h = _remaining.inHours.toString().padLeft(2, '0');
+    final m = (_remaining.inMinutes % 60).toString().padLeft(2, '0');
+    final s = (_remaining.inSeconds % 60).toString().padLeft(2, '0');
+    return '$h:$m:$s';
+  }
+
+  @override
   Widget build(BuildContext context) {
     final state = context.watch<AppState>();
     final qc = context.qc;
-    final isCompleted = state.isQuestCompleted(quest.id);
+    final isCompleted = state.isQuestCompleted(widget.quest.id);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -294,12 +338,25 @@ class _QuestCard extends StatelessWidget {
             ),
             child: Row(
               children: [
-                _Badge(label: quest.categoryName, color: _catColor),
+                _Badge(label: widget.quest.categoryName, color: _catColor),
                 const SizedBox(width: 6),
-                _Badge(label: quest.comfortLevelName, color: _comfortColor),
+                _Badge(label: widget.quest.comfortLevelName, color: _comfortColor),
                 const Spacer(),
-                Text(quest.difficultyStars,
-                    style: const TextStyle(color: AppColors.accent, fontSize: 12, letterSpacing: 1)),
+                Row(
+                  children: [
+                    Icon(Icons.timer_outlined, size: 12, color: qc.textMuted),
+                    const SizedBox(width: 3),
+                    Text(
+                      _countdownText,
+                      style: TextStyle(
+                        color: qc.textMuted,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -311,14 +368,14 @@ class _QuestCard extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(quest.emoji, style: const TextStyle(fontSize: 26)),
+                    Text(widget.quest.emoji, style: const TextStyle(fontSize: 26)),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            quest.title,
+                            widget.quest.title,
                             style: TextStyle(
                               color: qc.textPrimary,
                               fontSize: 15,
@@ -327,7 +384,7 @@ class _QuestCard extends StatelessWidget {
                           ),
                           const SizedBox(height: 3),
                           Text(
-                            quest.description,
+                            widget.quest.description,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(color: qc.textSecondary, fontSize: 12, height: 1.4),
@@ -347,13 +404,13 @@ class _QuestCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(7),
                       ),
                       child: Text(
-                        '+${quest.baseXP} XP',
+                        '+${widget.quest.baseXP} XP',
                         style: const TextStyle(
                             color: AppColors.accent, fontSize: 11, fontWeight: FontWeight.w700),
                       ),
                     ),
                     const Spacer(),
-                    if (isCompleted) _DoneChip() else _CompleteButton(questId: quest.id),
+                    if (isCompleted) _DoneChip() else _CompleteButton(questId: widget.quest.id),
                   ],
                 ),
               ],
@@ -391,7 +448,13 @@ class _SpecialMissionCardState extends State<_SpecialMissionCard>
     );
     _updateRemaining();
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted) setState(() => _updateRemaining());
+      if (!mounted) return;
+      final prev = _remaining.inSeconds;
+      setState(_updateRemaining);
+      // 슬롯이 바뀐 순간 미션 새로고침
+      if (prev <= 1 && _remaining.inSeconds > 0) {
+        context.read<AppState>().refreshSpecialMission();
+      }
     });
   }
 
@@ -420,35 +483,29 @@ class _SpecialMissionCardState extends State<_SpecialMissionCard>
     final state = context.watch<AppState>();
     final mission = state.todaySpecialMission!;
     final qc = context.qc;
-
+    final isCompleted = state.specialCompletedThisSlot;
     final isLoading = state.specialLoading;
-    final claim = state.specialClaim;
-    final claimedByMe = state.specialClaimedByMe;
-    final error = state.specialError;
-    final notConfigured = !SupabaseConfig.isConfigured;
 
     return AnimatedBuilder(
       animation: _pulseAnim,
       builder: (ctx, child) {
-        final glowOpacity = claim == null && !claimedByMe
-            ? 0.15 + _pulseAnim.value * 0.20
-            : 0.0;
+        final glowOpacity = isCompleted ? 0.0 : 0.12 + _pulseAnim.value * 0.18;
 
         return Container(
-          margin: const EdgeInsets.only(bottom: 16),
+          margin: const EdgeInsets.only(bottom: 10),
           decoration: BoxDecoration(
             color: qc.card,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: claimedByMe
-                  ? AppColors.accent.withValues(alpha: 0.8)
+              color: isCompleted
+                  ? AppColors.safe.withValues(alpha: 0.5)
                   : AppColors.accent.withValues(alpha: 0.35),
               width: 1.5,
             ),
             boxShadow: [
               BoxShadow(
                 color: AppColors.accent.withValues(alpha: glowOpacity),
-                blurRadius: 24,
+                blurRadius: 20,
                 spreadRadius: 2,
               ),
             ],
@@ -456,9 +513,9 @@ class _SpecialMissionCardState extends State<_SpecialMissionCard>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 상단 헤더 바
+              // 헤더 바
               Container(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
+                padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
@@ -466,7 +523,7 @@ class _SpecialMissionCardState extends State<_SpecialMissionCard>
                       AppColors.primary.withValues(alpha: 0.10),
                     ],
                   ),
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                 ),
                 child: Row(
                   children: [
@@ -486,36 +543,35 @@ class _SpecialMissionCardState extends State<_SpecialMissionCard>
                       ),
                     ),
                     const Spacer(),
-                    if (claim == null && !claimedByMe)
-                      Row(
-                        children: [
-                          Icon(Icons.timer_outlined, size: 12, color: qc.textMuted),
-                          const SizedBox(width: 3),
-                          Text(
-                            _countdownText,
-                            style: TextStyle(
-                                color: qc.textMuted,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 1),
-                          ),
-                        ],
-                      ),
+                    Row(
+                      children: [
+                        Icon(Icons.timer_outlined, size: 12, color: qc.textMuted),
+                        const SizedBox(width: 3),
+                        Text(
+                          _countdownText,
+                          style: TextStyle(
+                              color: qc.textMuted,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 1),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
 
               // 미션 내용
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(mission.emoji, style: const TextStyle(fontSize: 32)),
-                        const SizedBox(width: 12),
+                        Text(mission.emoji, style: const TextStyle(fontSize: 26)),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -524,100 +580,71 @@ class _SpecialMissionCardState extends State<_SpecialMissionCard>
                                 mission.title,
                                 style: TextStyle(
                                   color: qc.textPrimary,
-                                  fontSize: 17,
+                                  fontSize: 15,
                                   fontWeight: FontWeight.w800,
                                 ),
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: 3),
                               Text(
                                 mission.description,
-                                maxLines: 3,
+                                maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                    color: qc.textSecondary, fontSize: 13, height: 1.5),
+                                    color: qc.textSecondary, fontSize: 12, height: 1.4),
                               ),
                             ],
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 14),
-
-                    // XP + 상태/버튼
+                    const SizedBox(height: 8),
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: AppColors.accent.withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(7),
                           ),
                           child: Text(
                             '+${mission.bonusXp} XP',
                             style: const TextStyle(
                                 color: AppColors.accent,
-                                fontSize: 12,
+                                fontSize: 11,
                                 fontWeight: FontWeight.w700),
                           ),
                         ),
                         const Spacer(),
-                        _buildActionWidget(
-                          context: context,
-                          state: state,
-                          mission: mission,
-                          isLoading: isLoading,
-                          claim: claim,
-                          claimedByMe: claimedByMe,
-                          error: error,
-                          notConfigured: notConfigured,
-                        ),
+                        if (isLoading)
+                          const SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(
+                                strokeWidth: 2, color: AppColors.accent),
+                          )
+                        else if (isCompleted)
+                          _DoneChip()
+                        else
+                          ElevatedButton(
+                            onPressed: () => _onTap(context, state, mission),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.accent,
+                              foregroundColor: Colors.white,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              textStyle: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 0.5),
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: const Text('완료하기'),
+                          ),
                       ],
                     ),
-
-                    // 클레임된 경우 위너 표시
-                    if (claim != null && !claimedByMe) ...[
-                      const SizedBox(height: 10),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: qc.divider.withValues(alpha: 0.5),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                          children: [
-                            const Text('👑', style: TextStyle(fontSize: 14)),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                '${claim.claimerNickname}님이 오늘 먼저 완료했어요',
-                                style: TextStyle(color: qc.textMuted, fontSize: 12),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-
-                    // 에러
-                    if (error != null && claim == null) ...[
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Icon(Icons.wifi_off_rounded, size: 13, color: qc.textMuted),
-                          const SizedBox(width: 6),
-                          Text(error, style: TextStyle(color: qc.textMuted, fontSize: 11)),
-                          const Spacer(),
-                          GestureDetector(
-                            onTap: () => context.read<AppState>().refreshSpecialMission(),
-                            child: const Text('재시도',
-                                style: TextStyle(
-                                    color: AppColors.primary,
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w700)),
-                          ),
-                        ],
-                      ),
-                    ],
                   ],
                 ),
               ),
@@ -628,92 +655,7 @@ class _SpecialMissionCardState extends State<_SpecialMissionCard>
     );
   }
 
-  Widget _buildActionWidget({
-    required BuildContext context,
-    required AppState state,
-    required mission,
-    required bool isLoading,
-    required claim,
-    required bool claimedByMe,
-    required String? error,
-    required bool notConfigured,
-  }) {
-    if (isLoading) {
-      return const SizedBox(
-        width: 24,
-        height: 24,
-        child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.accent),
-      );
-    }
-
-    if (claimedByMe) {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-        decoration: BoxDecoration(
-          color: AppColors.accent.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.accent.withValues(alpha: 0.4)),
-        ),
-        child: const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('🏆', style: TextStyle(fontSize: 13)),
-            SizedBox(width: 4),
-            Text('내가 완료!',
-                style: TextStyle(
-                    color: AppColors.accent, fontSize: 13, fontWeight: FontWeight.w700)),
-          ],
-        ),
-      );
-    }
-
-    if (claim != null) {
-      // 다른 사람이 이미 완료
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-        decoration: BoxDecoration(
-          color: context.qc.divider,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Text(
-          '마감됨',
-          style: TextStyle(
-              color: context.qc.textMuted, fontSize: 13, fontWeight: FontWeight.w600),
-        ),
-      );
-    }
-
-    if (notConfigured) {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: context.qc.divider,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Text(
-          '설정 필요',
-          style: TextStyle(color: context.qc.textMuted, fontSize: 12),
-        ),
-      );
-    }
-
-    return ElevatedButton(
-      onPressed: () => _onClaimTap(context, state, mission),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.accent,
-        foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        textStyle:
-            const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, letterSpacing: 0.5),
-        minimumSize: Size.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      ),
-      child: const Text('도전하기'),
-    );
-  }
-
-  Future<void> _onClaimTap(BuildContext context, AppState state, mission) async {
+  Future<void> _onTap(BuildContext context, AppState state, mission) async {
     final navigator = Navigator.of(context);
     final scaffold = ScaffoldMessenger.of(context);
     try {
@@ -726,6 +668,16 @@ class _SpecialMissionCardState extends State<_SpecialMissionCard>
               FadeTransition(opacity: anim, child: child),
         ),
       );
+      if (result.didLevelUp) {
+        await navigator.push(
+          PageRouteBuilder(
+            pageBuilder: (ctx, anim, _) =>
+                LevelUpScreen(newLevel: result.newLevel, newTitle: result.newTitle),
+            transitionsBuilder: (ctx, anim, _, child) =>
+                FadeTransition(opacity: anim, child: child),
+          ),
+        );
+      }
     } catch (e) {
       scaffold.showSnackBar(SnackBar(content: Text('오류: $e')));
     }
