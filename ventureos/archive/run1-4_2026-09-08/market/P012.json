@@ -1,0 +1,35 @@
+{
+  "problem_id": "P012",
+  "market_category": "HIGHLY_COMPETITIVE",
+  "target_customer": "다수 숙소를 운영하는 에어비앤비 1인 호스트 및 공유숙박 관리대행사",
+  "market_size_estimate": "전 세계 에어비앤비 호스트는 500만명 이상으로 추정(에어비앤비 공개 자료 기준 추정치)되나, 이 중 유료 자동화 도구가 필요한 멀티 숙소 운영 호스트는 하위 세그먼트로 훨씬 작음(가정)",
+  "customer_acquisition_difficulty": "높음 — 이미 Hospitable, Smartbnb 등 다수 벤더가 동일 고객군을 두고 경쟁 중이며, 2026년 4월 Hospitable이 무료 Essentials 플랜(멀티채널 캘린더 동기화, 통합 인박스, 워크플로우 자동화 무제한 숙소 지원)을 출시해 유료 전환 유인이 더 약해짐",
+  "competition_score": 10,
+  "willingness_to_pay_score": 30,
+  "ai_automation_score": 50,
+  "mvp_feasibility_score": 55,
+  "expansion_score": 25,
+  "problem_severity_score": 25,
+  "customer_accessibility_score": 35,
+  "total_score": 31,
+  "competitors": [
+    "Hospitable (구 Smartbnb, 무료 Essentials 플랜 포함)", "다수의 Airbnb 자동화 툴(2026년 랭킹 기사에만 10개 이상 등장)", "Airbnb 자체 '저장된 답장'/자동 체크인 공식 기능(무료)"
+  ],
+  "existing_alternatives": [
+    "Airbnb 공식 저장된 답장(quick replies) 무료 기능 사용", "PDF/메시지 템플릿 복사-붙여넣기", "공유숙박 관리대행사에 위탁", "직접 실시간 응대"
+  ],
+  "market_gaps": [
+    "다국어 심야 실시간 챗봇, 카카오톡 등 국내 채널 연동은 상대적 공백일 수 있으나, 이미 Hospitable AI가 루틴 문의의 90%를 무료로 처리한다는 근거가 있어 신규 진입 여지가 매우 좁음"
+  ],
+  "possible_differentiation": [
+    "국내 스테이 호스트 대상 카카오톡/문자 채널 특화",
+    "다국어 심야 응대 특화(단, Hospitable 등도 이미 AI 응대를 다수 언어로 지원할 가능성 높음)"
+  ],
+  "major_risks": [
+    "Airbnb 자체가 무료 공식 기능으로 문제의 핵심을 이미 해결 중 — 플랫폼이 자체 해결한 문제는 서드파티 사업 기회가 구조적으로 작음",
+    "Hospitable 등 자금력 있는 경쟁자가 무료 플랜까지 내놓아 유료 전환 유인이 지속적으로 약화되는 추세",
+    "리서치 단계 confidence 자체가 낮음(3/10) — 최신 호스트 원문 불만이 확보되지 않아 문제의 현재 심각도가 과장됐을 가능성"
+  ],
+  "recommendation": "KILL",
+  "confidence": 65
+}

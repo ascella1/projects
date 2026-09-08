@@ -1,0 +1,37 @@
+{
+  "problem_id": "P003",
+  "market_category": "COMPETITIVE",
+  "target_customer": "사업자등록을 한 한국 프리랜서 및 1인 사업자 중 고정 거래처에 반복 청구하는 개발자/디자이너/강사 등",
+  "market_size_estimate": "한국 프리랜서/1인 사업자 수는 수백만 명 규모로 추정(가정, 정확한 통계 미확인). 다만 반복 세금계산서 발행이 필요한 '고정 거래처 보유' 세그먼트는 이 중 일부에 불과해 SAM은 훨씬 작을 것으로 추정",
+  "customer_acquisition_difficulty": "중간 — 세무 관련 키워드 검색 트래픽과 세무사무소 제휴(B2B2C) 채널이 존재하나, 핵심 경쟁자인 볼타(bolta)가 이미 무료로 반복발행/예약발행 기능을 제공하고 있어 유료 전환 유도가 어려움",
+  "competition_score": 15,
+  "willingness_to_pay_score": 35,
+  "ai_automation_score": 65,
+  "mvp_feasibility_score": 60,
+  "expansion_score": 45,
+  "problem_severity_score": 60,
+  "customer_accessibility_score": 55,
+  "total_score": 47,
+  "competitors": [
+    "볼타(bolta.io) - 반복 거래처 자동완성/예약발행/반복발행 무료 제공", "팝빌", "바로빌", "스마트빌", "더존 세무사랑", "삼쩜삼(간이 세무)"
+  ],
+  "existing_alternatives": [
+    "홈택스 직접 수기 입력", "엑셀 장부 병행 관리", "세무사무소 위탁"
+  ],
+  "market_gaps": [
+    "볼타가 핵심 문제(반복 거래처 자동완성, 예약/반복 발행)를 이미 무료로 해결하고 있어, 이번 조사에서 제안한 솔루션과 사실상 동일한 서비스가 존재함",
+    "계약서/이체내역 OCR 자동 공급가액 채우기 같은 부가 AI 기능은 차별화 여지가 남아있으나 핵심 페인포인트는 이미 해소된 상태로 판단됨"
+  ],
+  "possible_differentiation": [
+    "계약서/이체내역 OCR·AI 파싱으로 공급가액 자동 입력",
+    "세무사무소 대상 B2B2C 화이트라벨 제휴",
+    "엑셀 장부-홈택스 자동 대사(부가세 신고 보조)"
+  ],
+  "major_risks": [
+    "핵심 솔루션(볼타)이 이미 무료로 존재해 유료 사업모델 성립이 어려움",
+    "홈택스/전자세금계산서 발행대행 API 접근에 규제·인증 절차가 필요해 MVP 난이도가 실제보다 높을 수 있음",
+    "1차 커뮤니티 근거(실제 불만 게시글)를 확보하지 못해 수요 강도가 과대평가되었을 가능성"
+  ],
+  "recommendation": "KILL",
+  "confidence": 55
+}

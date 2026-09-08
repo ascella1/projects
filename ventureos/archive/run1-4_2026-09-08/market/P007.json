@@ -1,0 +1,37 @@
+{
+  "problem_id": "P007",
+  "market_category": "FRAGMENTED",
+  "target_customer": "정규 에이전시를 통하지 않고 개인적으로 고용되는 베이비시터/내니/프리랜서 돌봄 제공자 (주로 미국 시장 근거, 한국 시장은 미검증)",
+  "market_size_estimate": "개별 베이비시터/내니 시장 자체는 존재하나 규모 수치는 확보하지 못함(추정 필요). 미국에는 HomePay(Care.com), NannyPay, Paycheck Nanny 등 이미 성숙한 유료 서비스가 존재해 최소 수요는 검증되나, 한국에서는 자란다/맘시터 등이 매칭 플랫폼 위주라 유사 페인포인트의 존재 여부가 미검증",
+  "customer_acquisition_difficulty": "높음 — 개별 베이비시터/부모 쌍은 조직화되지 않아 도달이 어렵고, 지불 능력이 낮은 개인 대상 시장이라 CAC 대비 LTV가 불리할 가능성이 큼",
+  "competition_score": 20,
+  "willingness_to_pay_score": 30,
+  "ai_automation_score": 60,
+  "mvp_feasibility_score": 65,
+  "expansion_score": 35,
+  "problem_severity_score": 50,
+  "customer_accessibility_score": 30,
+  "total_score": 40,
+  "competitors": [
+    "HomePay(Care.com) - 세금/급여 컴플라이언스까지 포함한 프리미엄 서비스", "Daily Nanny(clock-in/out, 초과근무 추적)", "NannyPay", "Paycheck Nanny", "Sittercity"
+  ],
+  "existing_alternatives": [
+    "수기 근무시간 기록 후 문자/구두 청구", "가족 간 신뢰 기반 구두 정산", "아무 기록 없이 방치"
+  ],
+  "market_gaps": [
+    "HomePay는 세금/급여 컴플라이언스라는 규제 관련 해자(moat)를 가지고 있어 후발주자가 동일 영역에서 경쟁하기 어려움",
+    "한국 시장은 세금 신고 의무 구조가 달라 미국식 payroll 서비스를 그대로 이식하기 어렵고, 국내 특화 니즈는 이번 조사로 검증되지 않음"
+  ],
+  "possible_differentiation": [
+    "GPS 기반 자동 clock-in/out + 초과근무 자동 계산에 특화한 경량 무료 앱(컴플라이언스 제외)",
+    "미지급 시 정중한 AI 독촉 메시지 자동 생성",
+    "부모-베이비시터 매칭 플랫폼에 부가기능으로 결합(단독 사업보다 결합 모델이 유리할 수 있음, 가정)"
+  ],
+  "major_risks": [
+    "근거 신뢰도가 낮음(research_confidence 2, Reddit 원문 미확보)",
+    "시장 규모가 작고 개별 이용자의 지불 능력이 낮아 유닛이코노믹스가 성립하기 어려움",
+    "미국 기준 HomePay 등 규제 컴플라이언스 강자가 이미 존재하며, 한국은 아예 시장 존재 여부부터 미검증"
+  ],
+  "recommendation": "KILL",
+  "confidence": 40
+}

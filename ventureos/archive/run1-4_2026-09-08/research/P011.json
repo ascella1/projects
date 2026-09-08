@@ -1,0 +1,30 @@
+{
+  "problem_id": "P011",
+  "problem": "소규모 청소/홈서비스 업체가 문자·단체 카톡방으로 직원 스케줄을 수동 조율하면서 중복 예약과 소통 누락이 발생한다",
+  "target_customer": "직원 수 1~10명 규모의 소규모 청소업체 및 홈서비스(출장 수리 등) 사업자",
+  "problem_description": "많은 소규모 청소/홈서비스 업체가 여전히 구글 캘린더나 문자, 단체 채팅방으로 직원별 스케줄을 수동 배정한다. 이 방식은 더블부킹(중복 예약), 커뮤니케이션 지연, 막판 일정 변경 대응의 어려움으로 이어진다. 이를 해결하기 위한 전용 SaaS(CleanSlot, Zoho FSM 등)가 이미 존재한다는 점이 문제의 실재성을 뒷받침한다.",
+  "current_solution": "구글 캘린더 수동 입력 + 단체 문자/카톡방으로 직원에게 개별 통보, 또는 엑셀/종이 일정표 병행",
+  "pain_points": [
+    "직원 일정 수동 배정 시 더블부킹 발생",
+    "막판 일정 변경 시 전 직원에게 개별 재통보해야 하는 번거로움",
+    "단체 채팅방에서 중요 공지가 묻혀 소통 누락 발생",
+    "고객 예약과 직원 배치를 별도 시스템(캘린더+문자)으로 관리해야 하는 이중 작업"
+  ],
+  "frequency": "매일 반복되는 운영 업무",
+  "pain_score": 6,
+  "evidence": [
+    "https://www.zoho.com/fsm/customers/team-clean.html",
+    "https://alternativeto.net/software/cleanslot",
+    "https://prezohoweb.zoho.com/bookings/industries/home-services/cleaners.html"
+  ],
+  "existing_spending": "Zoho FSM, CleanSlot 등 청소업 전용 스케줄링 SaaS에 이미 비용을 지불하는 업체가 존재",
+  "possible_ai_solution": "고객 예약이 들어오면 직원 위치·가용 시간·이동 동선을 고려해 AI가 자동으로 최적 배정을 제안하고, 변경 시 관련 직원에게만 자동으로 알림을 보내는 경량 스케줄링 앱 (카카오톡 알림톡 연동으로 한국 시장 특화 가능)",
+  "potential_business_model": "월 구독형 SaaS (직원 수 기준 과금, 업체당 월 3~10만원), 청소업체 협회/프랜차이즈 본사를 통한 B2B 유통",
+  "estimated_mvp_cost_krw": 8000000,
+  "research_confidence": 5,
+  "assumptions": [
+    "실제 업주의 원문 불만 게시글(Reddit/카페)은 확보하지 못했고, 기존 경쟁 서비스의 존재와 일반적 업계 설명 자료를 근거로 구성함",
+    "이미 Zoho FSM, CleanSlot 등 경쟁자가 존재하므로 국내 카카오톡 알림톡 연동 등 로컬 차별화가 없으면 진입이 어려울 수 있음"
+  ],
+  "next_action": "국내 청소업체 사장 커뮤니티(카페, 블로그, 오픈채팅) 검색으로 실제 불만 사례 확보 및 카카오 알림톡 연동 수요 확인"
+}

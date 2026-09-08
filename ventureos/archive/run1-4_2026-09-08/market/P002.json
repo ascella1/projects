@@ -1,0 +1,37 @@
+{
+  "problem_id": "P002",
+  "market_category": "COMPETITIVE",
+  "target_customer": "다수의 구독 서비스(스트리밍/SaaS/헬스앱 등)를 사용하며 자동갱신을 놓치는 일반 소비자, 특히 무료체험 후 결제 전환을 인지하지 못하는 사람들",
+  "market_size_estimate": "정확한 글로벌 구독관리 앱 시장 규모 수치는 확보하지 못함(추정 필요). 미국에서는 Rocket Money(구 Truebill)가 수백만 사용자를 확보하며 '절약액의 일부' 수수료 모델로 실제 매출을 창출 중인 것으로 알려져 있어(간접 근거), 지불 의향이 실제로 존재하는 시장으로 추정됨. 한국은 뱅크샐러드/토스 등 대형 핀테크 앱이 정기결제 관련 기능 일부를 무료로 이미 제공 중이라 별도 유료 앱의 SAM은 상대적으로 작을 것으로 추정",
+  "customer_acquisition_difficulty": "중간 — '돈 아껴준다'는 메시지는 바이럴/입소문에 유리(개인 재무 콘텐츠, 앱스토어 리뷰에서 실제 확인됨)하나, 한국에서는 이미 무료로 유사 기능을 제공하는 대형 핀테크 앱과 경쟁해야 해 획득 난이도가 높아짐",
+  "competition_score": 25,
+  "willingness_to_pay_score": 65,
+  "ai_automation_score": 80,
+  "mvp_feasibility_score": 55,
+  "expansion_score": 70,
+  "problem_severity_score": 80,
+  "customer_accessibility_score": 65,
+  "total_score": 63,
+  "competitors": [
+    "Rocket Money(구 Truebill)", "Bobby", "PocketGuard", "Subscription Stopper", "뱅크샐러드(정기결제 관리 일부 기능)", "토스(자산관리/정기결제 알림)"
+  ],
+  "existing_alternatives": [
+    "은행 명세서 직접 확인", "캘린더에 갱신일 수기 기록", "카카오뱅크/토스 알림", "아무 조치 없이 방치"
+  ],
+  "market_gaps": [
+    "한국 대형 핀테크 앱은 '감지'는 해주지만 AI 기반 '이거 안 쓰시는데 취소하시겠어요?' 같은 사용패턴 기반 능동적 넛지와 원클릭 취소 대행까지는 미제공(추정, 직접 검증 필요)",
+    "해외 서비스 구독(넷플릭스 해외결제, 앱스토어 해외 구독 등) 감지는 국내 은행 앱 파싱만으로 놓치는 영역일 수 있음(가정)"
+  ],
+  "possible_differentiation": [
+    "사용 패턴 기반 AI 취소 추천 + 원클릭/대행 취소",
+    "절약액 기반 수익모델(Rocket Money 방식)로 무료 진입장벽 낮추기",
+    "해외 결제(앱스토어/플레이스토어 해외 구독) 특화 감지"
+  ],
+  "major_risks": [
+    "한국의 대형 무료 핀테크 앱(뱅크샐러드/토스)과 직접 경쟁 시 기능 차별화 실패 위험",
+    "은행/카드 데이터 연동을 위한 마이데이터 라이선스 등 규제 진입장벽 존재 가능성(미검증)",
+    "'감지'만으로는 지불 의향이 낮고, 실제 결제로 이어지려면 '취소 대행'까지 필요해 MVP 난이도 상승"
+  ],
+  "recommendation": "TEST",
+  "confidence": 60
+}

@@ -1,0 +1,37 @@
+{
+  "problem_id": "P009",
+  "market_category": "COMPETITIVE",
+  "target_customer": "고볼륨 웨딩/이벤트 프리랜서 사진작가 (건당 1,500장 이상 촬영, 워터마크 미리보기+원본 인도를 병행하는 작가)",
+  "market_size_estimate": "미국 내 웨딩 사진작가는 약 1~2만명 수준으로 추정(가정, 업계 협회 자료 기반 추정치 미검증), 이 중 Lightroom Classic을 주력 도구로 쓰는 고볼륨 작가로 좁히면 SAM은 수천 명 규모로 추정(가정)",
+  "customer_acquisition_difficulty": "중간 — 사진작가 커뮤니티(r/photography, 웨딩작가 페이스북 그룹, 워크숍)를 통한 타겟팅은 명확하나, 이미 Pixieset/ShootProof/Aftershoot/Imagen AI 등에 워크플로우가 락인된 작가가 많아 전환 비용 존재",
+  "competition_score": 35,
+  "willingness_to_pay_score": 60,
+  "ai_automation_score": 55,
+  "mvp_feasibility_score": 45,
+  "expansion_score": 45,
+  "problem_severity_score": 50,
+  "customer_accessibility_score": 65,
+  "total_score": 52,
+  "competitors": [
+    "Pixieset", "ShootProof", "Aftershoot (AI 컬링/선별)", "Imagen AI", "LR/Mogrify 2 플러그인", "Adobe Lightroom Classic 자체 배치 익스포트(프리셋 2회 실행)"
+  ],
+  "existing_alternatives": [
+    "듀얼 프리셋으로 배치 내보내기 2회 실행", "워터마크 버전 별도 폴더 관리 후 재정리", "갤러리 SaaS(Pixieset 등) 유료 구독으로 우회 해결", "어시스턴트/편집 아웃소싱에게 위탁"
+  ],
+  "market_gaps": [
+    "Lightroom 네이티브 환경에서 원클릭으로 워터마크+원본을 동시 생성하는 기능/플러그인은 명확히 부재",
+    "다만 이미 Aftershoot/Imagen AI 등 AI 컬링 도구와 Pixieset류 갤러리 SaaS가 인접 문제를 상당 부분 흡수하고 있어 '이 문제만' 겨냥한 신규 상품의 독자 가치는 제한적"
+  ],
+  "possible_differentiation": [
+    "Lightroom Classic 네이티브 플러그인으로 갤러리 SaaS 전환 없이 기존 워크플로우 유지",
+    "AI 베스트샷 자동 태깅 + 워터마크/원본 동시 출력 결합",
+    "일회성 라이선스 모델로 SaaS 구독 피로감이 있는 작가층 공략"
+  ],
+  "major_risks": [
+    "Pixieset/ShootProof/Aftershoot 등 이미 자금력 있는 경쟁자가 인접 문제를 해결 중이라 차별화 여지가 좁음",
+    "Lightroom SDK 기반 플러그인 개발 난이도가 낮지 않고 Adobe 정책 변경 리스크 존재",
+    "실제 미사용자 비중과 미사용 이유가 검증되지 않아 시장 갭이 과장됐을 가능성"
+  ],
+  "recommendation": "KILL",
+  "confidence": 50
+}

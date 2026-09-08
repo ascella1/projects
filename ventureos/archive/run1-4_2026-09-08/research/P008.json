@@ -1,0 +1,32 @@
+{
+  "problem_id": "P008",
+  "problem": "Etsy 등 마켓플레이스 셀러가 동일 구매자의 '중복 메시지'로 인해 응답률 지표(Star Seller)가 부당하게 깎이고, 이를 막기 위해 같은 문의에 여러 번 반복 응답하거나 일일이 스팸 처리해야 한다",
+  "target_customer": "Etsy 1인 셀러 및 소규모 온라인 셀러 (특히 Star Seller/우수 판매자 배지를 유지해야 하는 셀러)",
+  "problem_description": "구매자가 같은 문의를 여러 스레드로 나눠 보내거나 Etsy 시스템이 메시지를 중복 생성하면, 셀러가 한 스레드에만 답해도 나머지는 '무응답'으로 집계되어 24시간 내 개별 응답률(Message Response Rate)이 떨어진다. 이는 Star Seller 배지 박탈로 이어지고, 배지는 검색 노출/신뢰도에 영향을 준다. Etsy 측은 수동 이의 제기나 지표 보정을 지원하지 않는다.",
+  "current_solution": "이미 해결된 문의라도 중복 스레드마다 똑같은 답을 복사-붙여넣기하거나, 향후 연락을 막을 위험을 감수하고 '스팸'으로 표시함",
+  "pain_points": [
+    "이미 답한 문의에 똑같은 내용을 여러 번 반복 입력해야 함",
+    "스팸 처리 시 해당 구매자와 향후 정상적인 소통이 막힐 위험",
+    "지표 하락으로 배지가 박탈되어도 Etsy가 수동 검토/복구를 해주지 않음",
+    "24시간 내 개별 응답이라는 시간 압박 속에 반복 작업까지 해야 함"
+  ],
+  "frequency": "구매자가 많은 활성 셀러는 주 단위로 반복 발생 (여러 스레드 보고 사례 다수)",
+  "pain_score": 7,
+  "evidence": [
+    "https://community.etsy.com/t5/Technical-Issues/50-response-rate-against-me-due-to-duplicate-messages-from/m-p/141839558/highlight/true",
+    "https://community.etsy.com/t5/Technical-Issues/Star-seller-removed-due-to-duplicate-messages-from-same-buyer/m-p/144394892",
+    "https://community.etsy.com/t5/Technical-Issues/Received-3-Duplicate-Messages-and-now-not-a-star-seller/td-p/138956613",
+    "https://community.etsy.com/t5/Technical-Issues/Star-Seller-Duplicate-Messages-from-Buyer/m-p/140522468",
+    "https://community.etsy.com/t5/Technical-Issues/Duplicate-Message-Missed-response/td-p/148634680"
+  ],
+  "existing_spending": "직접적인 유료 지출 근거는 확인되지 않음 (Etsy 자체 기능의 정책적 문제이며, 셀러들은 무료 수동 대응/커뮤니티 민원으로 대응 중)",
+  "possible_ai_solution": "Etsy 메시지함에 붙는 브라우저 확장/봇: 동일 구매자의 중복 스레드를 자동 감지해 원클릭으로 동일 답변을 모든 스레드에 전송(스팸 처리 없이), 응답률 지표를 실시간으로 시각화해 위험 알림을 주는 크롬 확장",
+  "potential_business_model": "월 구독형 브라우저 확장 (셀러당 $5~9/월), Etsy 셀러 커뮤니티/포럼 통해 직접 마케팅",
+  "estimated_mvp_cost_krw": 3000000,
+  "research_confidence": 7,
+  "assumptions": [
+    "Etsy가 API 정책상 서드파티 확장의 자동 응답을 허용하는지는 별도 확인 필요",
+    "동일 문제가 Shopify, 네이버 스마트스토어 등 타 플랫폼에도 존재하는지는 미확인"
+  ],
+  "next_action": "Etsy 셀러 대상 소규모 설문/인터뷰 5~10명 진행해 지불 의사(WTP) 및 Etsy API 접근 가능 범위 확인"
+}

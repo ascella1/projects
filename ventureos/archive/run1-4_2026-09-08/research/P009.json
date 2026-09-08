@@ -1,0 +1,30 @@
+{
+  "problem_id": "P009",
+  "problem": "고볼륨 이벤트/웨딩 사진작가가 클라이언트 갤러리용 워터마크 이미지와 구매용 원본 이미지를 만들기 위해 같은 사진을 두 번 내보내기(export)해야 하는 이중 작업",
+  "target_customer": "하루 여러 건 촬영하는 웨딩/이벤트 프리랜서 사진작가 (1건당 1,500장 이상, 하루 3~4개 이벤트 처리하는 고볼륨 작가)",
+  "problem_description": "Lightroom Classic 등에서 온라인 미리보기용 워터마크 버전과 실제 판매/인도용 무워터마크 원본을 따로 만들려면 동일 이미지를 두 번 내보내고 재정리해야 한다. 하루 6,000장 규모를 처리하는 작가에게는 이 중복 작업이 상당한 시간 손실이며, 특정 사진을 다시 찾는 것도 카탈로그 내에서 번거롭다.",
+  "current_solution": "듀얼 프리셋으로 배치 내보내기를 두 번 실행하거나, 워터마크 버전을 별도 폴더로 내보낸 뒤 다시 가져오는 수동 워크플로우 사용",
+  "pain_points": [
+    "동일 이미지를 워터마크/무워터마크 두 버전으로 각각 export",
+    "6,000장 규모에서 특정 사진 재검색이 오래 걸림",
+    "이중 작업으로 인도(delivery)까지 걸리는 시간 증가",
+    "이미 존재하는 워크어라운드(프리셋)도 완전한 해결책은 아님"
+  ],
+  "frequency": "이벤트/웨딩 성수기 기준 주 여러 건, 촬영 건당 반복",
+  "pain_score": 6,
+  "evidence": [
+    "https://community.adobe.com/t5/lightroom-classic-ideas/p-exporting-images-watermarked-and-without-watermarks-simultaneously-in-the-same-folder/idi-p/13992783",
+    "https://community.adobe.com/feature-requests-681/p-ability-to-watermark-images-shared-online-661213",
+    "https://community.adobe.com/t5/lightroom-classic-discussions/export-taking-really-long-time-with-watermark/m-p/13045583"
+  ],
+  "existing_spending": "Pixieset, ShootProof 등 갤러리 인도 SaaS에 월 구독료 지출 중인 작가들이 존재하나, 다수는 여전히 Lightroom 수동 워크플로우에 머물러 있음(evidence 내 다수의 별도 기능 요청 스레드가 이를 시사)",
+  "possible_ai_solution": "Lightroom 플러그인/데스크톱 유틸: 한 번의 배치 작업으로 워터마크+원본 버전을 동시에 생성하고, AI로 베스트샷 자동 태깅 및 클라이언트별 갤러리 링크를 자동 생성",
+  "potential_business_model": "일회성 라이선스($49~99) 또는 월 구독형 플러그인, 사진작가 커뮤니티/워크숍 채널 통한 직접 판매",
+  "estimated_mvp_cost_krw": 8000000,
+  "research_confidence": 6,
+  "assumptions": [
+    "이미 Pixieset/ShootProof 등이 이 문제를 상당 부분 해결하고 있어 신규 진입 시 차별화 포인트(예: Lightroom 네이티브 통합) 필요",
+    "실제 지불 의사 규모는 추가 확인 필요"
+  ],
+  "next_action": "r/photography, 웨딩작가 페이스북 그룹에서 Pixieset/ShootProof 미사용자 비중과 미사용 이유 조사"
+}

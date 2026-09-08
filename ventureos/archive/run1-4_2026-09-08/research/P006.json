@@ -1,0 +1,28 @@
+{
+  "problem_id": "P006",
+  "problem": "콘텐츠 크리에이터(유튜버/뉴스레터 운영자)가 브랜드 스폰서십 딜과 입금 상태를 이메일/스프레드시트로 수동 추적하다가 후속조치를 놓치거나 이중예약을 한다",
+  "target_customer": "중소형 유튜버, 뉴스레터 운영자, 인스타그램 인플루언서 등 스폰서십으로 수익을 내는 1인 크리에이터",
+  "problem_description": "브랜드와의 협찬/스폰서십 딜이 이메일 스레드에 흩어져 있으면 요율, 일정, 성과 데이터를 잃어버리기 쉽다. 스프레드시트는 딜이 10건을 넘어가면 관리가 어려워지고, 미수금 청구나 이중예약을 방지하기 위한 트래커가 필요해진다.",
+  "current_solution": "구글시트/노션 기반 수동 스폰서십 트래커, 이메일 스레드 검색으로 딜 현황 파악",
+  "pain_points": [
+    "딜 정보가 이메일 스레드에 흩어져 요율/일정/성과 데이터를 잃어버림",
+    "스프레드시트 관리가 딜 10건 이상부터 한계에 부딪힘",
+    "이중예약, 미수 인보이스, 놓친 후속조치(follow-up) 발생"
+  ],
+  "frequency": "딜 성사마다, 매월 반복",
+  "pain_score": 5,
+  "evidence": [
+    "Gumroad에서 판매 중인 다수의 'Creator Finance Tracker', 'Sponsorship Tracker' 템플릿(예: https://markusgalli.gumroad.com/l/creator-finance-tracker, https://heyismail.gumroad.com/l/CreatorOS) - 크리에이터들이 직접 이 문제를 해결하기 위한 유료 템플릿을 만들어 판매하고 있다는 점에서 실수요 존재를 시사",
+    "https://sponsorship.so/templates/sponsorship-tracking-spreadsheet - '스프레드시트는 딜 소수에는 괜찮지만 약 10건이 넘어가면 데이터베이스나 전용 툴로 전환한다'는 서술"
+  ],
+  "existing_spending": "일부는 이미 Gumroad에서 수천~수만원대 Notion/스프레드시트 템플릿을 구매해 사용 중",
+  "possible_ai_solution": "이메일/DM에서 스폰서십 딜 정보를 AI가 자동 추출해 트래커에 채워넣고, 입금 지연 시 자동 팔로업 이메일 초안 생성, 캘린더 연동으로 이중예약 방지",
+  "potential_business_model": "월 구독형 SaaS (크리에이터 대상 저가 티어) 또는 1회성 템플릿+자동화 애드온 판매",
+  "estimated_mvp_cost_krw": 4500000,
+  "research_confidence": 2,
+  "assumptions": [
+    "이번 조사에서는 Reddit/실제 크리에이터의 1차 불만 게시글을 직접 확인하지 못했고, Gumroad 템플릿 판매량이라는 간접 신호와 marketing 사이트 서술에 의존했으므로 근거 신뢰도가 낮은 편",
+    "크리에이터 이코노미 자체는 이미 Notion, Airtable 등 범용 툴로 상당 부분 대체 가능해 전용 SaaS의 차별화가 쉽지 않을 것으로 추정"
+  ],
+  "next_action": "실제 크리에이터 대상 Reddit(r/NewTubers, r/PartneredYoutube), 트위터/X에서 1차 불만 사례를 추가로 확인해 근거를 보강할 것"
+}

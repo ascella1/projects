@@ -1,0 +1,37 @@
+{
+  "problem_id": "P011",
+  "market_category": "FRAGMENTED",
+  "target_customer": "직원 1~10명 규모의 국내 소규모 청소업체 및 홈서비스(출장 수리 등) 사업자",
+  "market_size_estimate": "국내 소규모 청소/홈서비스 사업자 수는 정확한 통계 미확인이나 수만 개 사업체 규모로 추정(가정). 글로벌 청소업 스케줄링 SaaS 시장(Zoho FSM, CleanSlot, Connecteam 등)은 이미 존재하나 국내 시장에서 카카오 알림톡 특화 플레이어는 명확히 확인되지 않음",
+  "customer_acquisition_difficulty": "높음 — 소규모 사업주는 SaaS 도입 의사결정이 느리고 B2B 영업(협회, 프랜차이즈 본사 채널)이 필요하며, 국내 근태관리 앱(잡캔, 플렉스)이나 클린벨 같은 인접 서비스가 이미 신뢰를 확보 중",
+  "competition_score": 40,
+  "willingness_to_pay_score": 55,
+  "ai_automation_score": 65,
+  "mvp_feasibility_score": 55,
+  "expansion_score": 55,
+  "problem_severity_score": 55,
+  "customer_accessibility_score": 40,
+  "total_score": 52,
+  "competitors": [
+    "Zoho FSM", "CleanSlot", "Connecteam", "Koalendar", "잡캔(근태관리)", "플렉스(HR 통합)", "클린벨(입주청소 견적/예약 플랫폼, 인접)"
+  ],
+  "existing_alternatives": [
+    "구글 캘린더 수동 입력", "단체 문자/카톡방 통보", "엑셀/종이 일정표", "사장이 직접 전화로 조율"
+  ],
+  "market_gaps": [
+    "청소업 특화 + 카카오 알림톡 자동 알림을 결합한 국내 로컬 솔루션은 명확한 직접 경쟁자가 확인되지 않음",
+    "다만 글로벌 범용 스케줄링 SaaS(Zoho FSM, Connecteam)가 기능적으로 이미 이 문제의 상당 부분을 커버하므로 '국내+업종 특화'가 실제 차별화로 이어질지는 검증 필요"
+  ],
+  "possible_differentiation": [
+    "고객 예약 시 직원 위치/동선 기반 AI 자동 배정",
+    "카카오톡 알림톡 연동으로 국내 사업주의 낮은 SaaS 학습 장벽 대응",
+    "청소업체 협회/프랜차이즈 본사를 통한 B2B 채널 확보 시 빠른 확산 가능"
+  ],
+  "major_risks": [
+    "실제 국내 청소업체 사장의 원문 불만 사례를 확보하지 못해 문제의 실재성이 해외 사례로만 추정됨",
+    "Zoho FSM, Connecteam 등 기능이 풍부한 글로벌 경쟁자가 이미 존재해 국내 로컬라이제이션만으로는 차별화가 약할 수 있음",
+    "소규모 사업주 대상 B2B 세일즈는 CAC가 높고 영업 사이클이 긺"
+  ],
+  "recommendation": "HOLD",
+  "confidence": 45
+}

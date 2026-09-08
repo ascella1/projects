@@ -1,0 +1,37 @@
+{
+  "problem_id": "P006",
+  "market_category": "EMERGING",
+  "target_customer": "중소형 유튜버, 뉴스레터 운영자, 인스타그램 인플루언서 등 스폰서십으로 수익을 내는 1인 크리에이터",
+  "market_size_estimate": "글로벌 크리에이터 이코노미 시장 자체는 크지만, '스폰서십 딜 트래킹' 단일 기능의 시장 규모 수치는 확보하지 못함(추정 필요). Passionfroot가 벤처투자를 유치하고 실제 수수료(5~15%) 기반 매출을 창출 중인 점(실측 근거)에서 최소한의 실수요는 존재하는 것으로 판단",
+  "customer_acquisition_difficulty": "중간 — 크리에이터 대상 트위터/뉴스레터/커뮤니티를 통한 도달은 가능하나, Passionfroot처럼 브랜드-크리에이터 양면 네트워크 효과를 구축한 경쟁자와 경쟁하려면 상당한 마케팅 투자가 필요",
+  "competition_score": 25,
+  "willingness_to_pay_score": 50,
+  "ai_automation_score": 65,
+  "mvp_feasibility_score": 65,
+  "expansion_score": 50,
+  "problem_severity_score": 50,
+  "customer_accessibility_score": 45,
+  "total_score": 48,
+  "competitors": [
+    "Passionfroot(구 Passionfruit) - 벤처투자 유치, 딜당 5~15% 수수료 모델", "Notion/Airtable 범용 템플릿", "Gumroad 판매 Creator Finance Tracker/Sponsorship Tracker 템플릿"
+  ],
+  "existing_alternatives": [
+    "구글시트/노션 수동 트래커", "이메일 스레드 검색", "아무 관리 없이 방치"
+  ],
+  "market_gaps": [
+    "Passionfroot는 브랜드-크리에이터 매칭+결제까지 포함한 무거운 플랫폼이라, '입금/후속조치 추적'만 가볍게 원하는 크리에이터에게는 과할 수 있음(가정)",
+    "이메일/DM에서 딜 정보를 AI로 자동 추출해주는 경량 트래커는 상대적으로 미검증 영역"
+  ],
+  "possible_differentiation": [
+    "이메일 자동 파싱 기반 경량 트래커(매칭 기능 없이 추적/알림에 집중)",
+    "구독형이 아닌 1회성 구매(템플릿+자동화 애드온) 모델로 낮은 진입장벽",
+    "입금 지연 시 AI 팔로업 이메일 자동 초안 생성"
+  ],
+  "major_risks": [
+    "이번 조사의 근거 신뢰도가 낮아(research_confidence 2) 실수요 크기가 과대/과소평가되었을 가능성이 큼",
+    "이미 벤처투자를 받은 Passionfroot가 유사 문제를 플랫폼 레벨에서 해결 중이라 직접 경쟁 시 불리",
+    "크리에이터 이코노미는 트렌드 의존도가 높아 시장 자체가 축소될 위험 존재"
+  ],
+  "recommendation": "HOLD",
+  "confidence": 40
+}

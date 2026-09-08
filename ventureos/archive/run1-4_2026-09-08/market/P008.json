@@ -1,0 +1,38 @@
+{
+  "problem_id": "P008",
+  "market_category": "EMERGING",
+  "target_customer": "Etsy Star Seller 배지를 유지해야 하는 1인/소규모 셀러 (구매자 문의량이 많은 활성 셀러 우선)",
+  "market_size_estimate": "Etsy 활성 셀러는 전 세계 약 700만명 이상으로 추정(Etsy 공식 IR 자료 기준, 추정치)되나, 이 중 Star Seller 배지 유지에 신경 쓰는 활성 응대형 셀러와 중복 메시지 이슈를 실제로 겪는 비율은 커뮤니티 게시글 건수 대비 매우 작은 하위 세그먼트로 추정(가정). SAM은 수만 명 단위로 매우 좁을 가능성이 높음",
+  "customer_acquisition_difficulty": "중간 — Etsy 셀러 포럼/페이스북 그룹/서브레딧(r/EtsySellers)을 통해 타겟팅은 가능하나, 문제가 '전체 Etsy 셀러'가 아닌 '중복 메시지를 겪는 활성 셀러'라는 좁은 서브세그먼트라 실제 모수 확보가 어려움",
+  "competition_score": 55,
+  "willingness_to_pay_score": 35,
+  "ai_automation_score": 55,
+  "mvp_feasibility_score": 55,
+  "expansion_score": 35,
+  "problem_severity_score": 60,
+  "customer_accessibility_score": 60,
+  "total_score": 51,
+  "competitors": [
+    "Alura (Etsy SEO/셀러 툴)", "eRank", "Vela (Etsy 메시지/템플릿 관리 확장)", "Etsy 자체 '저장된 답장' 기능", "복사-붙여넣기 수동 대응(현재 방식)"
+  ],
+  "existing_alternatives": [
+    "동일 답변 반복 붙여넣기", "구매자를 스팸 처리", "Etsy 커뮤니티 포럼에 민원/이의 제기", "그냥 배지 박탈 감수"
+  ],
+  "market_gaps": [
+    "중복 스레드 자동 감지 + 원클릭 동시 응답에 특화된 도구는 확인되지 않음 (Vela 등은 템플릿 관리 중심이지 중복 탐지 전용은 아님)",
+    "Etsy가 정책적으로 이 문제를 인지만 하고 공식 해결책(지표 보정 등)을 제공하지 않아 셀러 자체 도구 수요가 존재할 가능성"
+  ],
+  "possible_differentiation": [
+    "구매자 ID/스레드 유사도 기반 중복 자동 탐지 + 원클릭 일괄 응답",
+    "응답률 지표 실시간 시각화 및 위험 알림(배지 박탈 전 경고)",
+    "Etsy 외 타 마켓플레이스(네이버 스마트스토어, 쿠팡 등)로 확장 가능한 범용 '중복 문의 관리' 포지셔닝"
+  ],
+  "major_risks": [
+    "Etsy API/이용약관상 자동 응답·브라우저 자동화가 허용되는지 미확인 — 계정 정지 리스크로 이어질 수 있음",
+    "문제가 매우 좁은 니치(Star Seller 배지에 민감한 활성 셀러)라 유료 전환 규모가 작을 가능성",
+    "월 $5~9 구독료 대비 실제 지불 의향이 검증되지 않음 (직접적 유료 지출 사례 없음)",
+    "Etsy가 UI/정책을 바꾸면 확장 프로그램이 즉시 무력화될 수 있는 플랫폼 종속 리스크"
+  ],
+  "recommendation": "HOLD",
+  "confidence": 50
+}

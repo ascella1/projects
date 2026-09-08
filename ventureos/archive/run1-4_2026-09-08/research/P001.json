@@ -1,0 +1,28 @@
+{
+  "problem_id": "P001",
+  "problem": "프리랜서/1인 사업자가 인보이스 발행과 미수금(연체된 대금) 추적을 수동으로 하느라 시간과 돈을 잃는다",
+  "target_customer": "인보이스를 직접 만들어 보내는 프리랜서, 1인 에이전시, 소규모 컨설턴트 (특히 스프레드시트로 관리 중인 사람)",
+  "problem_description": "많은 프리랜서가 인보이스 작성-발송-리마인드를 수동으로 처리하며, 클라이언트가 대금을 늦게 지불해도 별도로 추적/독촉해야 한다. 전용 툴을 안 쓰는 경우 엑셀/구글시트로 관리한다.",
+  "current_solution": "구글시트/엑셀 수동 기록, 수동 인보이스 작성 및 이메일 리마인드, 또는 Zoho/FreshBooks 같은 기존 SaaS 부분 사용",
+  "pain_points": [
+    "인보이스 작성부터 발송, 리마인드까지 수 시간 소요",
+    "연체 대금을 잊고 못 챙기는 경우 발생",
+    "이미 다수의 SaaS가 존재해 차별화 포인트가 필요함(레드오션 성격)"
+  ],
+  "frequency": "매 프로젝트/매월 반복 (청구 주기마다)",
+  "pain_score": 6,
+  "evidence": [
+    "https://workspace.fiverr.com/blog/what-these-5-invoicing-habits-say-about-you-as-a-freelancer - 프리랜서는 연평균 6,000달러의 미수금을 손해보고, 연체 대금을 쫓는 데 연간 약 20일(160시간)을 쓴다는 통계 인용",
+    "https://dev.to/dev_resources/7-programs-freelancers-run-before-sending-an-invoice-54oj - 인보이스 관련 반복 작업에 대한 프리랜서 커뮤니티 글"
+  ],
+  "existing_spending": "이미 Zoho Invoice, FreshBooks, Wave 등 유료/무료 툴에 일부 지출 중이거나, 지출 없이 수동으로 시간을 쓰고 있음",
+  "possible_ai_solution": "은행/계좌 연동 없이도 이메일·문자 발송 자동화 + AI가 미수금 패턴을 감지해 자동 리마인드 문구 생성, 연체 위험 클라이언트 우선순위화",
+  "potential_business_model": "월 구독형 SaaS (소액, 1인 사업자 대상 저가 티어)",
+  "estimated_mvp_cost_krw": 4000000,
+  "research_confidence": 3,
+  "assumptions": [
+    "이미 경쟁자가 매우 많아(Bonsai, HoneyBook, FreshBooks 등) 신규 차별화가 없으면 시장 진입이 어려울 것으로 추정",
+    "한국 시장에서는 계좌이체+카톡 청구가 일반적이라 미국 시장과 행태가 다를 수 있음(미검증)"
+  ],
+  "next_action": "Market Agent가 경쟁 강도(레드오션 여부)를 우선 평가하고, 특정 niche(예: 특정 업종 프리랜서)로 좁힐 필요가 있는지 검토"
+}

@@ -1,0 +1,37 @@
+{
+  "problem_id": "P005",
+  "market_category": "COMPETITIVE",
+  "target_customer": "학원이 아닌 1:1 개인 과외 선생님 (프리랜서 강사, 은퇴 교사, 동네 보습 선생님)",
+  "market_size_estimate": "한국 개인 과외 선생님 수는 수십만 명 규모로 추정(가정, 정확한 통계 미확인). 다만 '쌤' 앱의 프리미엄 가격이 월 2,000원 수준으로 형성되어 있어, 이 시장의 1인당 지불 가능 금액(ARPU) 자체가 매우 낮은 것으로 판단됨(실측 근거)",
+  "customer_acquisition_difficulty": "높음 — 개인 과외 선생님은 조직화된 채널이 없어 개별적으로 도달해야 하며, 이미 무료/초저가 앱(쌤, 쌤잇 등)에 만족하는 사용자가 다수라 전환 유인이 약함",
+  "competition_score": 25,
+  "willingness_to_pay_score": 30,
+  "ai_automation_score": 55,
+  "mvp_feasibility_score": 70,
+  "expansion_score": 40,
+  "problem_severity_score": 60,
+  "customer_accessibility_score": 40,
+  "total_score": 44,
+  "competitors": [
+    "쌤(Ssem) - 프리미엄 월 2,000원", "쌤잇(Ssamit)", "콴다과외 선생님", "과릿", "와쌤"
+  ],
+  "existing_alternatives": [
+    "엑셀 학생 명단/수업료 기록", "카카오톡 일정·청구 소통", "메모 앱 수업 기록"
+  ],
+  "market_gaps": [
+    "이미 여러 직접 경쟁 앱이 존재하며 가격도 이미 매우 낮게 형성되어 있어, 신규 진입자가 추가로 확보할 수 있는 시장 가치가 제한적",
+    "예체능 과외 등 특정 니치는 상대적으로 미개척일 수 있으나 전체 시장 규모가 작아 사업성이 낮음"
+  ],
+  "possible_differentiation": [
+    "음악/미술 등 예체능 과외 특화 진도 관리",
+    "AI 음성-텍스트 자동 진도표 요약",
+    "학부모 결제 연동 수수료 기반 무료 모델"
+  ],
+  "major_risks": [
+    "이미 형성된 초저가 시장(월 2,000원 수준)이라 유닛이코노믹스가 성립하기 어려움",
+    "직접 경쟁자가 다수 존재해 신규 차별화 지점이 뚜렷하지 않음",
+    "1차 커뮤니티 근거(맘카페 등 실제 후기)를 확보하지 못해 수요 강도가 과대평가되었을 가능성"
+  ],
+  "recommendation": "KILL",
+  "confidence": 55
+}
